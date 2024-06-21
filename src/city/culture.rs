@@ -1,3 +1,4 @@
+pub mod surnames;
 pub mod culture {
     use procgen_templater::dictionary::{
         dictionary::Dictionary,
@@ -5,6 +6,10 @@ pub mod culture {
     };
     use rand::Rng;
     use uuid::Uuid;
+
+    use super::surnames::surnames::{
+        random_child_surname_formats, random_marriage_surname_formats, SurnameFormat,
+    };
 
     #[derive(PartialEq, Debug, Clone)]
     pub struct Culture {
@@ -21,45 +26,6 @@ pub mod culture {
         pub historical_names: Vec<(String, String, String)>,
     }
 
-    #[derive(PartialEq, Debug, Clone)]
-    pub struct SurnameFormat {
-        pre: String,
-        mind_1_first_present: bool,
-        mind_1_last_present: bool,
-        between: String,
-        mind_2_first_present: bool,
-        mindd_2_last_present: bool,
-        post: String,
-    }
-
-    impl SurnameFormat {
-        pub fn render(
-            self: &Self,
-            mind_1_first: String,
-            mind_1_last: String,
-            mind_2_first: String,
-            mind_2_last: String,
-        ) -> String {
-            let mut output = String::new();
-            output.push_str(&self.pre);
-            if self.mind_1_first_present {
-                output.push_str(&mind_1_first);
-            }
-            if self.mind_1_last_present {
-                output.push_str(&mind_1_last);
-            }
-            output.push_str(&self.between);
-            if self.mind_2_first_present {
-                output.push_str(&mind_2_first);
-            }
-            if self.mindd_2_last_present {
-                output.push_str(&mind_2_last);
-            }
-            output.push_str(&self.post);
-            return output;
-        }
-    }
-
     pub fn random_culture(dictionary: &Dictionary) -> Culture {
         let mut rng = rand::thread_rng();
         let landlocked = rng.gen::<f32>() > 0.5;
@@ -69,19 +35,41 @@ pub mod culture {
             adult_age: 18 + ((8.0 * rng.gen::<f32>()) * -4.0) as u32,
             landlocked,
             staple_meats: generate_random_meats(dictionary, &landlocked),
-            staple_plants: vec![],
+            staple_plants: generate_random_plants(dictionary),
             avg_lifespan: 75 + (30.0 * rng.gen::<f32>() - 15.0) as u32,
             avg_lifespan_variance: 10,
-            child_surname_formats: vec![],
-            marriage_surname_formats: vec![],
+            child_surname_formats: random_child_surname_formats(),
+            marriage_surname_formats: random_marriage_surname_formats(),
             historical_names: generate_historical_figures(dictionary),
         };
+    }
+
+    fn generate_random_plants(dictionary: &Dictionary) -> Vec<Word> {
+        let mut output: Vec<Word> = Vec::new();
+        let mut rng = rand::thread_rng();
+        for _i in 0..(rng.gen::<f32>() * 4.0) as usize + 1 {
+            output.push(
+                dictionary
+                    .get_random_word((WordType::Noun, vec![vec!["Crop".to_string()]]))
+                    .unwrap()
+                    .clone(),
+            )
+        }
+        for _i in 0..(rng.gen::<f32>() * 2.0) as usize + 1 {
+            output.push(
+                dictionary
+                    .get_random_word((WordType::Noun, vec![vec!["Grain".to_string()]]))
+                    .unwrap()
+                    .clone(),
+            )
+        }
+        return output;
     }
 
     fn generate_random_meats(dictionary: &Dictionary, landlocked: &bool) -> Vec<Word> {
         let mut output: Vec<Word> = Vec::new();
         let mut rng = rand::thread_rng();
-        for _i in 0..(rng.gen::<f32>() * 10.0) as usize + 5 {
+        for _i in 0..(rng.gen::<f32>() * 10.0) as usize + 3 {
             if *landlocked || rng.gen::<f32>() > 0.3 {
                 // land creature (non carnivore)
                 // should exclude ocean creatures
@@ -103,6 +91,7 @@ pub mod culture {
                                 "Carnivore".to_string(),
                                 "Sentient".to_string(),
                                 "Ocean".to_string(),
+                                "Magical".to_string(),
                             ],
                         )
                         .unwrap()
@@ -120,7 +109,11 @@ pub mod culture {
                                     vec!["Ocean".to_string()],
                                 ],
                             ),
-                            vec!["Sentient".to_string(), "Collosal".to_string()],
+                            vec![
+                                "Sentient".to_string(),
+                                "Collosal".to_string(),
+                                "Magical".to_string(),
+                            ],
                         )
                         .unwrap()
                         .clone(),
@@ -167,28 +160,6 @@ pub mod culture {
         println!(
             "{:#?}",
             random_culture(&build_dictionary_from_folder("./data_files"))
-        );
-    }
-
-    #[test]
-    fn test_surname_formatter() {
-        let t_format = SurnameFormat {
-            pre: String::new(),
-            mind_1_first_present: true,
-            mind_1_last_present: false,
-            between: String::new(),
-            mind_2_first_present: false,
-            mindd_2_last_present: false,
-            post: String::from("sen"),
-        };
-        println!(
-            "{}",
-            t_format.render(
-                "Random".to_string(),
-                "Surname".to_string(),
-                "Random2".to_string(),
-                "Surname2".to_string()
-            )
         );
     }
 }

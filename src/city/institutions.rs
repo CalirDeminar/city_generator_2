@@ -57,4 +57,14 @@ pub mod institutions {
         pub salary: u32,
         pub started_year: u32,
     }
+
+    #[test]
+    fn test_name_gen() {
+        use procgen_templater::dictionary::dictionary::build_dictionary_from_folder;
+        let dict = build_dictionary_from_folder("./data_files");
+        let template = dict
+            .get_random_template(vec![vec!["Pub".to_string()]])
+            .unwrap();
+        println!("{}", dict.render_template(&template.id).unwrap());
+    }
 }

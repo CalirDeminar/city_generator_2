@@ -1,0 +1,20 @@
+// ** Goverment
+// ** Underworld
+// Sketchy Bar
+// Fence
+// ** Altars
+// Alter
+// Chapel
+// Cult?
+// ** Resources
+// General Retail
+// ** Defence
+// ** Social
+// Pubs
+TEMPLATE(The ADJECTIVE[[Colour]] NOUN[[Mammal][Large]]), TAG(Pub)
+TEMPLATE(The NOUN[[Metal]] NOUN[[Mammal][Large]]), TAG(Pub)
+TEMPLATE(The ADJECTIVE[[Colour]] NOUN[[Mammal][Large]] Inn), TAG(Pub)
+TEMPLATE(The NOUN[[Metal]] NOUN[[Mammal][Large]] Inn), TAG(Pub)
+// Hotels
+// Thearters
+// Clubs

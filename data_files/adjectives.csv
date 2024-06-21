@@ -66,3 +66,13 @@ ADJECTIVE(Greasy), TAG(HairState), TAG(Personal)
 ADJECTIVE(Whispy), TAG(HairState), TAG(Personal)
 ADJECTIVE(Messy), TAG(HairState), TAG(Personal)
 ADJECTIVE(Tidy), TAG(HairState), TAG(Personal)
+// Object State
+ADJECTIVE(Rusty), TAG(ObjectState), TAG(Metal), TAG(Negative)
+ADJECTIVE(Polished), TAG(ObjectState), TAG(Positive)
+ADJECTIVE(Bloody), TAG(ObjectState), TAG(Negative)
+ADJECTIVE(Busted), TAG(ObjectState), TAG(Negative)
+ADJECTIVE(Battered), TAG(ObjectState), TAG(Negative)
+ADJECTIVE(Fresh), TAG(ObjectState), TAG(Positive)
+// Building State
+ADJECTIVE(Crumbling), TAG(BuildingState), TAG(Negative)
+ADJECTIVE(Sunken), TAG(BuildingState), TAG(Negative)
