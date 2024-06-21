@@ -11,10 +11,10 @@
 // ** Defence
 // ** Social
 // Pubs
-TEMPLATE(The ADJECTIVE[[Colour]] NOUN[[Mammal][Large]]), TAG(Pub)
-TEMPLATE(The NOUN[[Metal]] NOUN[[Mammal][Large]]), TAG(Pub)
 TEMPLATE(The ADJECTIVE[[Colour]] NOUN[[Mammal][Large]] Inn), TAG(Pub)
 TEMPLATE(The NOUN[[Metal]] NOUN[[Mammal][Large]] Inn), TAG(Pub)
+TEMPLATE(The NOUN[[Metal, Colour]] NOUN[[Container, Cutlery]] Inn), TAG(Pub)
+TEMPLATE(The ADJECTIVE[[Quality][Positive][Impersonal]] NOUN[[Mammal][Large]] Inn), TAG(Pub)
 // Hotels
 // Thearters
 // Clubs

@@ -21,6 +21,7 @@ pub mod surnames {
             mind_2_first: String,
             mind_2_last: String,
         ) -> String {
+            // TODO - dehiphenite case
             let mut output = String::new();
             output.push_str(&self.pre);
             if self.mind_1_first_present {

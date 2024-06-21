@@ -44,6 +44,58 @@ pub mod culture {
         };
     }
 
+    pub fn rebalance_dict_for_culture(culture: &Culture, dictionary: &Dictionary) -> Dictionary {
+        let mut dict = dictionary.clone();
+        let meat_len = dict
+            .index
+            .tag_words
+            .get(&(WordType::Noun, "Creature".to_string()))
+            .unwrap()
+            .len();
+        let meat_repeats = meat_len / culture.staple_meats.len();
+        for meat in &culture.staple_meats {
+            for _i in 0..meat_repeats {
+                let mut m = meat.clone();
+                let id = Uuid::new_v4();
+                m.id = id.clone();
+                dict.words.insert(m.id.clone(), m);
+                // tags
+                for t in &meat.tags {
+                    dict.index
+                        .tag_words
+                        .get_mut(&(WordType::Noun, t.to_string()))
+                        .unwrap()
+                        .insert(id.clone());
+                }
+            }
+        }
+
+        let plant_len = dict
+            .index
+            .tag_words
+            .get(&(WordType::Noun, "Plant".to_string()))
+            .unwrap()
+            .len();
+        let plant_repeats = plant_len / culture.staple_plants.len();
+        for plant in &culture.staple_plants {
+            for _i in 0..plant_repeats {
+                let mut m = plant.clone();
+                let id = Uuid::new_v4();
+                m.id = id.clone();
+                dict.words.insert(m.id.clone(), m);
+                // tags
+                for t in &plant.tags {
+                    dict.index
+                        .tag_words
+                        .get_mut(&(WordType::Noun, t.to_string()))
+                        .unwrap()
+                        .insert(id.clone());
+                }
+            }
+        }
+        return dict;
+    }
+
     fn generate_random_plants(dictionary: &Dictionary) -> Vec<Word> {
         let mut output: Vec<Word> = Vec::new();
         let mut rng = rand::thread_rng();
@@ -160,6 +212,27 @@ pub mod culture {
         println!(
             "{:#?}",
             random_culture(&build_dictionary_from_folder("./data_files"))
+        );
+    }
+
+    #[test]
+    fn rebalance_dict() {
+        use procgen_templater::dictionary::dictionary::build_dictionary_from_folder;
+        let dict = build_dictionary_from_folder("./data_files");
+        let culture = random_culture(&dict);
+        let dict2 = rebalance_dict_for_culture(&culture, &dict);
+        assert!(
+            dict.index
+                .tag_words
+                .get(&(WordType::Noun, "Creature".to_string()))
+                .unwrap()
+                .len()
+                < dict2
+                    .index
+                    .tag_words
+                    .get(&(WordType::Noun, "Creature".to_string()))
+                    .unwrap()
+                    .len()
         );
     }
 }
