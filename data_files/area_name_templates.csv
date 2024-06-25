@@ -1,0 +1,2 @@
+TEMPLATE(ADJECTIVE[[Location, Quality, Age, Colour]] NOUN[[LastName]] NOUN([[AreaFeature]])), TAG(AreaName)
+TEMPLATE(), TAG(AreaName)

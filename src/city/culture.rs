@@ -1,11 +1,15 @@
 pub mod surnames;
 pub mod culture {
+    use std::collections::HashSet;
+
     use procgen_templater::dictionary::{
         dictionary::Dictionary,
         word::word::{Word, WordType},
     };
     use rand::Rng;
     use uuid::Uuid;
+
+    use crate::city::city::Era;
 
     use super::surnames::surnames::{
         random_child_surname_formats, random_marriage_surname_formats, SurnameFormat,
@@ -23,10 +27,11 @@ pub mod culture {
         // surname formats are layed out in a (male (or eldest), female (or youngest)) format
         pub child_surname_formats: Vec<(SurnameFormat, SurnameFormat)>,
         pub marriage_surname_formats: Vec<(SurnameFormat, SurnameFormat)>,
-        pub historical_names: Vec<(String, String, String)>,
+        pub historical_names: Vec<(Word, Word, Word)>,
+        pub era: Era,
     }
 
-    pub fn random_culture(dictionary: &Dictionary) -> Culture {
+    pub fn random_culture(dictionary: &Dictionary, era: Era) -> Culture {
         let mut rng = rand::thread_rng();
         let landlocked = rng.gen::<f32>() > 0.5;
 
@@ -40,59 +45,95 @@ pub mod culture {
             avg_lifespan_variance: 10,
             child_surname_formats: random_child_surname_formats(),
             marriage_surname_formats: random_marriage_surname_formats(),
-            historical_names: generate_historical_figures(dictionary),
+            historical_names: generate_historical_figures(dictionary, &era),
+            era,
         };
+    }
+
+    fn balance_words_to_dict<'a>(
+        dict: &'a mut Dictionary,
+        words: &Vec<Word>,
+        tags: Vec<String>,
+        fraction: f32,
+    ) -> &'a mut Dictionary {
+        let mut id_set: HashSet<Uuid> = HashSet::new();
+        for (i, tag) in tags.iter().enumerate() {
+            if i.eq(&0) {
+                id_set = dict
+                    .index
+                    .tag_words
+                    .get(&(WordType::Noun, tag.to_string()))
+                    .unwrap()
+                    .clone();
+            } else {
+                let buffer = dict
+                    .index
+                    .tag_words
+                    .get(&(WordType::Noun, tag.to_string()))
+                    .unwrap()
+                    .clone();
+                id_set.retain(|t| buffer.contains(t));
+            }
+        }
+        let tag_count_in_dict = id_set.len();
+        let repeats = (((1.0 - (words.len() as f32 / tag_count_in_dict as f32)) * fraction)
+            * tag_count_in_dict as f32) as usize;
+        for word in words {
+            for _i in 0..repeats {
+                let mut wc = word.clone();
+                let id = Uuid::new_v4();
+                wc.id = id.clone();
+                dict.words.insert(id, wc);
+                for t in &word.tags {
+                    dict.index
+                        .tag_words
+                        .get_mut(&(WordType::Noun, t.to_string()))
+                        .unwrap()
+                        .insert(id.clone());
+                }
+            }
+        }
+        return dict;
     }
 
     pub fn rebalance_dict_for_culture(culture: &Culture, dictionary: &Dictionary) -> Dictionary {
         let mut dict = dictionary.clone();
-        let meat_len = dict
-            .index
-            .tag_words
-            .get(&(WordType::Noun, "Creature".to_string()))
-            .unwrap()
-            .len();
-        let meat_repeats = meat_len / culture.staple_meats.len();
-        for meat in &culture.staple_meats {
-            for _i in 0..meat_repeats {
-                let mut m = meat.clone();
-                let id = Uuid::new_v4();
-                m.id = id.clone();
-                dict.words.insert(m.id.clone(), m);
-                // tags
-                for t in &meat.tags {
-                    dict.index
-                        .tag_words
-                        .get_mut(&(WordType::Noun, t.to_string()))
-                        .unwrap()
-                        .insert(id.clone());
-                }
-            }
-        }
 
-        let plant_len = dict
-            .index
-            .tag_words
-            .get(&(WordType::Noun, "Plant".to_string()))
-            .unwrap()
-            .len();
-        let plant_repeats = plant_len / culture.staple_plants.len();
-        for plant in &culture.staple_plants {
-            for _i in 0..plant_repeats {
-                let mut m = plant.clone();
-                let id = Uuid::new_v4();
-                m.id = id.clone();
-                dict.words.insert(m.id.clone(), m);
-                // tags
-                for t in &plant.tags {
-                    dict.index
-                        .tag_words
-                        .get_mut(&(WordType::Noun, t.to_string()))
-                        .unwrap()
-                        .insert(id.clone());
-                }
-            }
-        }
+        balance_words_to_dict(
+            &mut dict,
+            &culture.staple_meats,
+            vec!["Creature".to_string()],
+            1.0,
+        );
+
+        balance_words_to_dict(
+            &mut dict,
+            &culture.staple_plants,
+            vec!["Plant".to_string()],
+            1.0,
+        );
+
+        let titles: Vec<Word> = culture
+            .historical_names
+            .iter()
+            .map(|i| i.0.clone())
+            .collect();
+        balance_words_to_dict(&mut dict, &titles, vec!["Title".to_string()], 0.5);
+
+        let fnames: Vec<Word> = culture
+            .historical_names
+            .iter()
+            .map(|i| i.1.clone())
+            .collect();
+        balance_words_to_dict(&mut dict, &fnames, vec!["FirstName".to_string()], 0.2);
+
+        let lnames: Vec<Word> = culture
+            .historical_names
+            .iter()
+            .map(|i| i.2.clone())
+            .collect();
+        balance_words_to_dict(&mut dict, &lnames, vec!["LastName".to_string()], 0.2);
+
         return dict;
     }
 
@@ -175,10 +216,10 @@ pub mod culture {
         return output;
     }
 
-    fn generate_historical_figures(dictionary: &Dictionary) -> Vec<(String, String, String)> {
+    fn generate_historical_figures(dictionary: &Dictionary, era: &Era) -> Vec<(Word, Word, Word)> {
         let mut rng = rand::thread_rng();
-        let mut historical_names: Vec<(String, String, String)> = Vec::new();
-        for _i in 0..(rng.gen::<f32>() * 10.0) as usize {
+        let mut historical_names: Vec<(Word, Word, Word)> = Vec::new();
+        for _i in 0..((rng.gen::<f32>() * 10.0) + 3.0) as usize {
             let gender = if rng.gen::<bool>() { "Male" } else { "Female" }.to_string();
             let title = dictionary
                 .get_random_word((
@@ -186,20 +227,24 @@ pub mod culture {
                     vec![vec!["Title".to_string()], vec![gender.clone()]],
                 ))
                 .unwrap()
-                .base
                 .clone();
             let f_name = dictionary
                 .get_random_word((
                     WordType::Noun,
-                    vec![vec!["FirstName".to_string()], vec![gender.clone()]],
+                    vec![
+                        vec!["FirstName".to_string()],
+                        vec![gender.clone()],
+                        vec![format!("{}", era)],
+                    ],
                 ))
                 .unwrap()
-                .base
                 .clone();
             let l_name = dictionary
-                .get_random_word((WordType::Noun, vec![vec!["LastName".to_string()]]))
+                .get_random_word((
+                    WordType::Noun,
+                    vec![vec!["LastName".to_string()], vec![format!("{}", era)]],
+                ))
                 .unwrap()
-                .base
                 .clone();
             historical_names.push((title, f_name, l_name));
         }
@@ -211,7 +256,7 @@ pub mod culture {
         use procgen_templater::dictionary::dictionary::build_dictionary_from_folder;
         println!(
             "{:#?}",
-            random_culture(&build_dictionary_from_folder("./data_files"))
+            random_culture(&build_dictionary_from_folder("./data_files"), Era::Medieval)
         );
     }
 
@@ -219,7 +264,8 @@ pub mod culture {
     fn rebalance_dict() {
         use procgen_templater::dictionary::dictionary::build_dictionary_from_folder;
         let dict = build_dictionary_from_folder("./data_files");
-        let culture = random_culture(&dict);
+        let culture = random_culture(&dict, Era::Medieval);
+
         let dict2 = rebalance_dict_for_culture(&culture, &dict);
         assert!(
             dict.index

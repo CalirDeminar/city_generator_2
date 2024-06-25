@@ -138,7 +138,7 @@ dependencies = [
 [[package]]
 name = "procgen_templater"
 version = "0.1.0"
-source = "git+https://github.com/CalirDeminar/procgen_templater.git?branch=master#c4d267fd293d6ea96cb774acb7dee4aebe24b84c"
+source = "git+https://github.com/CalirDeminar/procgen_templater.git?branch=master#2dd88efe9cb7570c5e6c733bf818560d50a791ae"
 dependencies = [
  "csv",
  "html-builder",

@@ -11,6 +11,8 @@ pub mod institutions {
 
     use uuid::Uuid;
 
+    use crate::city::population::mind::mind::MindId;
+
     pub enum InsitutionCategory {
         Goverment,
         Underworld,
@@ -37,8 +39,10 @@ pub mod institutions {
         Restaurant,
     }
 
+    pub type InstitutionId = Uuid;
+
     pub struct Institution {
-        pub id: Uuid,
+        pub id: InstitutionId,
         pub name: String,
         pub category: InsitutionCategory,
         pub management: Vec<ManagementSpecification>,
@@ -53,7 +57,7 @@ pub mod institutions {
     }
     pub struct StaffDefinition {
         pub title: String,
-        pub employee_id: Uuid,
+        pub employee_id: MindId,
         pub salary: u32,
         pub started_year: u32,
     }
