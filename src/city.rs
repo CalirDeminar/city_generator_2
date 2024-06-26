@@ -1,13 +1,18 @@
 pub mod area;
 pub mod culture;
+pub mod dieties;
 pub mod institutions;
 pub mod population;
 pub mod city {
-    use std::fmt;
+    use std::{collections::HashMap, fmt};
 
     use uuid::Uuid;
 
-    use super::{culture::culture::Culture, population::population::Population};
+    use super::{
+        area::area::{Area, AreaId},
+        culture::culture::Culture,
+        population::population::Population,
+    };
 
     #[derive(PartialEq, Debug, Clone)]
     pub enum Era {
@@ -32,5 +37,6 @@ pub mod city {
         pub name: String,
         pub culture: Culture,
         pub population: Population,
+        pub areas: HashMap<AreaId, Area>,
     }
 }

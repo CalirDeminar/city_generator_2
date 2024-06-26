@@ -8,6 +8,7 @@ TAG(AmbiguousGender), HAS_PARENT(Gender)
 TAG(EraModern), HAS_PARENT(Era)
 TAG(EraMedieval), HAS_PARENT(Era)
 TAG(EraFantasy), HAS_PARENT(EraMedieval), HAS_PARENT(Era)
+TAG(EraAll), HAS_PARENT(EraModern), HAS_PARENT(EraFantasy), HAS_PARENT(EraMedieval)
 
 // Modern
 

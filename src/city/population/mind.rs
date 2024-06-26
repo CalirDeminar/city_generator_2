@@ -54,6 +54,7 @@ pub mod mind {
         pub alive: bool,
         pub first_name: String,
         pub last_name: String,
+        pub age: u32,
         pub gender: Gender,
         pub sexuality: Sexuality,
         pub relations: HashMap<MindId, Vec<RelationVerb>>,
@@ -65,6 +66,7 @@ pub mod mind {
         return Mind {
             id: Uuid::new_v4(),
             alive: true,
+            age: 30,
             first_name: dict
                 .get_random_word((
                     WordType::Noun,

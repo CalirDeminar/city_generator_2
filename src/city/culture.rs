@@ -185,6 +185,7 @@ pub mod culture {
                                 "Sentient".to_string(),
                                 "Ocean".to_string(),
                                 "Magical".to_string(),
+                                "Magical".to_string(),
                             ],
                         )
                         .unwrap()
@@ -206,6 +207,7 @@ pub mod culture {
                                 "Sentient".to_string(),
                                 "Collosal".to_string(),
                                 "Magical".to_string(),
+                                "Mythical".to_string(),
                             ],
                         )
                         .unwrap()

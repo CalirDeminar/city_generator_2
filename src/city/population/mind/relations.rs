@@ -1,3 +1,4 @@
+pub mod friends;
 pub mod relations {
     #[derive(PartialEq, Debug, Clone)]
     pub enum RelationVerb {

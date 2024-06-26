@@ -1,11 +1,34 @@
 pub mod area {
+    use crate::city::city::City;
+    use procgen_templater::dictionary::dictionary::Dictionary;
+    use rand::Rng;
     use uuid::Uuid;
+
+    pub type AreaId = Uuid;
 
     #[derive(PartialEq, Debug, Clone)]
     pub struct Area {
-        pub id: Uuid,
+        pub id: AreaId,
         pub name: String,
         pub size: usize,
+    }
+
+    impl City {
+        pub fn area_is_full(_area_id: AreaId) -> bool {
+            return false;
+        }
+    }
+
+    pub fn random_area(dict: &Dictionary) -> Area {
+        let name_template = dict
+            .get_random_template(vec![vec!["AreaName".to_string()]])
+            .unwrap();
+        let mut rand = rand::thread_rng();
+        return Area {
+            id: Uuid::new_v4() as AreaId,
+            name: dict.render_template(&name_template.id).unwrap(),
+            size: (rand.gen::<f32>() * 20.0) as usize,
+        };
     }
 
     #[test]

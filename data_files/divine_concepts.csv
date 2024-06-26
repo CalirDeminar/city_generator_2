@@ -1,0 +1,14 @@
+// Earth Group from DF
+NOUN(Earth), TAG(DivineConcept), TAG(EraAll), TAG(Caverns), TAG(Minerals), TAG(Metals), TAG(Volcanos), TAG(Salt), TAG(Mountains)
+NOUN(Minerals), TAG(DivineConcept), TAG(EraAll), TAG(Crafts), TAG(Metals), TAG(Earth)
+NOUN(Metals), TAG(DivineConcept), TAG(EraAll), TAG(Metals), TAG(Crafts), TAG(Fire), TAG(Earth)
+NOUN(Volcanos), TAG(DivineConcept), TAG(EraAll), TAG(Fire), TAG(Mountains), TAG(Earth)
+NOUN(Mountains), TAG(DivineConcept), TAG(EraAll), TAG(Caverns), TAG(Volcanos), TAG(Earth)
+NOUN(Caverns), TAG(DivineConcept), TAG(EraAll), TAG(Earth), TAG(Mountains)
+// War Group from DF
+NOUN(War), TAG(DivineConcept), TAG(EraAll), TAG(Death), TAG(Chaos), TAG(Valor), TAG(Victory), TAG(Fortresses)
+NOUN(Death), TAG(DivineConcept), TAG(EraAll), TAG(Disease), TAG(Suicide), TAG(Rebirth), TAG(Murder), TAG(War)
+NOUN(Chaos), TAG(DivineConcept), TAG(EraAll), TAG(War)
+NOUN(Valor), TAG(DivineConcept), TAG(EraAll), TAG(Courage), TAG(War)
+NOUN(Victory), TAG(DivineConcept), TAG(EraAll), TAG(War)
+NOUN(Fortresses), TAG(DivineConcept), TAG(EraAll), TAG(War)
