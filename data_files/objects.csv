@@ -37,12 +37,16 @@ NOUN(Guitarist), TAG(Profession), TAG(Music), TAG(Guitar), TAG(Male), TAG(Female
 NOUN(Pianist), TAG(Profession), TAG(Music), TAG(Piano), TAG(Male), TAG(Female), TAG(EraModern)
 NOUN(Piper), TAG(Profession), TAG(Music), TAG(Pipe), TAG(Male), TAG(Female), TAG(EraMedieval), TAG(EraModern)
 NOUN(Barkeep), TAG(Profession), TAG(Bar), TAG(Male), TAG(Female), TAG(EraMedieval), TAG(EraModern)
-NOUN(Chef), TAG(Profession), TAG(Food), TAG(Male), TAG(Femail), TAG(EraMedieval), TAG(EraModern)
+NOUN(Chef), TAG(Profession), TAG(Food), TAG(Male), TAG(Female), TAG(EraMedieval), TAG(EraModern)
 NOUN(Waiter), TAG(Profession), TAG(Service), TAG(Food), TAG(Male), TAG(EraMedieval), TAG(EraModern)
 NOUN(Waitress), TAG(Profession), TAG(Service), TAG(Food), TAG(Female), TAG(EraMedieval), TAG(EraModern)
 // Instruments
+TAG(Instrument), HAS_PARENT(Music)
 NOUN(Harp), TAG(Instrument), TAG(String), TAG(EraMedieval)
 NOUN(Lute), TAG(Instrument), TAG(String), TAG(EraMedieval)
 NOUN(Guitar), TAG(Instrument), TAG(String), TAG(EraModern)
 NOUN(Piano), TAG(Instrument), TAG(Keyed), TAG(EraModern)
 NOUN(Pipes), TAG(Instrument), TAG(Wind), TAG(EraMedieval), TAG(EraModern)
+// Music
+NOUN(Rythm), TAG(Music)
+NOUN(Festival), TAG(Music), TAG(Event)

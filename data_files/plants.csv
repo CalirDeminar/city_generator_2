@@ -2,10 +2,11 @@
 TAG(Vegetable), HAS_PARENT(Food), HAS_PARENT(Plant), HAS_PARENT(Crop)
 TAG(Leaf), HAS_PARENT(Food), HAS_PARENT(Plant), HAS_PARENT(Crop)
 TAG(Fruit), HAS_PARENT(Food), HAS_PARENT(Plant), HAS_PARENT(Crop)
-TAG(Tree), HAS_PARENT(Plant), HAS_PARENT(Wood)
+TAG(Tree), HAS_PARENT(Plant), HAS_PARENT(Wood), HAS_PARENT(Trees)
 TAG(Wood), HAS_PARENT(Material), HAS_PARENT(Structural), HAS_PARENT(Fuel)
 TAG(Flower), HAS_PARENT(Plant)
 TAG(Grain), HAS_PARENT(Food), HAS_PARENT(Plant), HAS_PARENT(Crop)
+TAG(Crop), HAS_PARENT(Agriculture)
 // trees
 NOUN(Alder), ADJECTIVE(Alder), TAG(Tree)
 NOUN(Apple), ADJECTIVE(Apple Wood), TAG(Tree), TAG(Fruit)
