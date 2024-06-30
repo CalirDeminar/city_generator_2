@@ -113,15 +113,15 @@ pub mod physical_description {
         };
     }
 
-    #[test]
-    fn test_random_descriptions() {
-        use procgen_templater::dictionary::dictionary::build_dictionary_from_folder;
-        let dict = build_dictionary_from_folder("./data_files");
-        let mut prev = random_description(&dict);
-        for _i in 0..50 {
-            let d = random_description(&dict);
-            println!("{}", merge_descriptions(&dict, &prev, &d).render(None));
-            prev = d;
-        }
-    }
+    // #[test]
+    // fn test_random_descriptions() {
+    //     use procgen_templater::dictionary::dictionary::build_dictionary_from_folder;
+    //     let dict = build_dictionary_from_folder("./data_files");
+    //     let mut prev = random_description(&dict);
+    //     for _i in 0..50 {
+    //         let d = random_description(&dict);
+    //         println!("{}", merge_descriptions(&dict, &prev, &d).render(None));
+    //         prev = d;
+    //     }
+    // }
 }

@@ -1,7 +1,7 @@
 pub mod grammar {
     pub fn is_vowel(c: &char) -> bool {
         let vowels = vec!['a', 'e', 'i', 'o', 'u'];
-        return vowels.iter().any(|v| c.eq(v));
+        return vowels.iter().any(|v| c.to_ascii_lowercase().eq(v));
     }
 
     pub fn render_list(l: Vec<&str>) -> String {

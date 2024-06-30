@@ -1,5 +1,7 @@
 pub mod dieties {
 
+    use std::collections::HashMap;
+
     use crate::{
         city::city::Era,
         grammar::grammar::{a_or_an, render_list},
@@ -34,6 +36,15 @@ pub mod dieties {
         }
     }
 
+    pub fn random_dieties(dict: &Dictionary) -> HashMap<DietyId, Diety> {
+        let mut output: HashMap<DietyId, Diety> = HashMap::new();
+        for _i in 0..20 {
+            let d = random_diety(&dict);
+            output.insert(d.id.clone(), d);
+        }
+        return output;
+    }
+
     pub fn random_diety(dict: &Dictionary) -> Diety {
         return Diety {
             id: Uuid::new_v4(),
@@ -44,7 +55,10 @@ pub mod dieties {
                 .base
                 .to_string(),
             form: dict
-                .get_random_word((WordType::Noun, vec![vec!["Creature".to_string()]]))
+                .get_random_word_without(
+                    (WordType::Noun, vec![vec!["Creature".to_string()]]),
+                    vec!["Mythical".to_string()],
+                )
                 .unwrap()
                 .clone(),
         };

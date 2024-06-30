@@ -1,6 +1,6 @@
 pub mod surnames;
 pub mod culture {
-    use std::collections::HashSet;
+    use std::collections::{HashMap, HashSet};
 
     use procgen_templater::dictionary::{
         dictionary::Dictionary,
@@ -9,7 +9,10 @@ pub mod culture {
     use rand::Rng;
     use uuid::Uuid;
 
-    use crate::city::city::Era;
+    use crate::city::{
+        city::Era,
+        dieties::dieties::{random_dieties, Diety, DietyId},
+    };
 
     use super::surnames::surnames::{
         random_child_surname_formats, random_marriage_surname_formats, SurnameFormat,
@@ -28,6 +31,8 @@ pub mod culture {
         pub child_surname_formats: Vec<(SurnameFormat, SurnameFormat)>,
         pub marriage_surname_formats: Vec<(SurnameFormat, SurnameFormat)>,
         pub historical_names: Vec<(Word, Word, Word)>,
+        pub spirituality: f32,
+        pub dieties: HashMap<DietyId, Diety>,
         pub era: Era,
     }
 
@@ -47,6 +52,8 @@ pub mod culture {
             marriage_surname_formats: random_marriage_surname_formats(),
             historical_names: generate_historical_figures(dictionary, &era),
             era,
+            dieties: random_dieties(&dictionary),
+            spirituality: rng.gen::<f32>(),
         };
     }
 

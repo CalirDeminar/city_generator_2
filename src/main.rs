@@ -1,7 +1,15 @@
+use city::city::{random_city, Era};
 use procgen_templater::dictionary::dictionary::build_dictionary_from_folder;
 pub mod city;
 pub mod grammar;
 fn main() {
-    let dictionary = build_dictionary_from_folder("./data_files");
-    dictionary.inspect();
+    let dict = build_dictionary_from_folder("./data_files");
+
+    let mut city = random_city(&dict, Era::Medieval, 50);
+    for _i in 0..100 {
+        city.simulate_year();
+    }
+    for mind in city.population.values() {
+        mind.inspect(&city);
+    }
 }
