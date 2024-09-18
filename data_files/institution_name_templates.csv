@@ -1,4 +1,11 @@
 // ** Goverment
+// Town Hall / City Hall
+// Laboratory
+// Library
+// School
+// University
+// Prison
+// Asylum
 // ** Underworld
 // Sketchy Bar
 TEMPLATE(The ADJECTIVE[[Negative][Impersonal][ObjectState]] NOUN[[Cutlery, Weapon][EraMedieval]]), TAG(SketchyBar), TAG(EraMedieval), TAG(EraModern)
@@ -7,6 +14,8 @@ TEMPLATE(The ADJECTIVE[[Negative][Impersonal][BuildingState]] NOUN[[Container][E
 // ** Altars
 // Alter
 // Chapel
+TEMPLATE(The House of CONCEPT), TAG(Altar), TAG(Altar), TAG(EraAll)
+TEMPLATE(The [[AreaFeature, LocalFeature][Geography]] of CONCEPT), TAG(Altar), TAG(EraAll)
 // Cult?
 // ** Resources
 // General Retail
@@ -16,21 +25,27 @@ TEMPLATE(The ADJECTIVE[[Negative][Impersonal][BuildingState]] NOUN[[Container][E
 // ** Social
 // Pubs
 //  Inn Suffix
-TEMPLATE(The ADJECTIVE[[Colour, Metal]] NOUN[[Mammal][Large]] Inn), TAG(Pub), TAG(EraMedieval), TAG(EraModern)
-TEMPLATE(The ADJECTIVE[[Metal, Colour]] NOUN[[Container, Cutlery, Instrument][EraMedieval]] Inn), TAG(Pub), TAG(EraMedieval), TAG(EraModern)
-TEMPLATE(The ADJECTIVE[[Quality, Age][Positive, Age][Impersonal]] NOUN[[Mammal][Large]] Inn), TAG(Pub), TAG(EraMedieval), TAG(EraModern)
-TEMPLATE(The ADJECTIVE[[Quality, Age][Positive, Age][Impersonal]] NOUN[[Container, Cutlery, Instrument][EraMedieval]] Inn), TAG(Pub), TAG(EraMedieval), TAG(EraModern)
+TEMPLATE(The ADJECTIVE[[Colour, Metal]] NOUN[[Mammal][Large]] Inn), TAG(Pub), TAG(Food) TAG(Social), TAG(EraMedieval), TAG(EraModern)
+TEMPLATE(The ADJECTIVE[[Metal, Colour]] NOUN[[Container, Cutlery, Instrument][EraMedieval]] Inn), TAG(Pub), TAG(Food) TAG(Social), TAG(EraMedieval), TAG(EraModern)
+TEMPLATE(The ADJECTIVE[[Quality, Age][Positive, Age][Impersonal]] NOUN[[Mammal][Large]] Inn), TAG(Pub), TAG(Food) TAG(Social), TAG(EraMedieval), TAG(EraModern)
+TEMPLATE(The ADJECTIVE[[Quality, Age][Positive, Age][Impersonal]] NOUN[[Container, Cutlery, Instrument][EraMedieval]] Inn), TAG(Pub), TAG(Food) TAG(Social), TAG(EraMedieval), TAG(EraModern)
 //  No Suffix
-TEMPLATE(The ADJECTIVE[[Colour, Metal]] NOUN[[Mammal][Large]]), TAG(Pub), TAG(EraMedieval), TAG(EraModern)
-TEMPLATE(The ADJECTIVE[[Metal, Colour]] NOUN[[Container, Cutlery, Instrument][EraMedieval]]), TAG(Pub), TAG(EraMedieval), TAG(EraModern)
-TEMPLATE(The ADJECTIVE[[Quality, Age][Positive, Age][Impersonal]] NOUN[[Mammal][Large]]), TAG(Pub), TAG(EraMedieval), TAG(EraModern)
-TEMPLATE(The ADJECTIVE[[Quality, Age][Positive, Age][Impersonal]] NOUN[[Container, Cutlery, Instrument][EraMedieval]]), TAG(Pub), TAG(EraMedieval), TAG(EraModern)
-TEMPLATE(NOUN[[FirstName]]'s), TAG(Pub), TAG(EraMedieval), TAG(EraModern)
+TEMPLATE(The ADJECTIVE[[Colour, Metal]] NOUN[[Mammal][Large]]), TAG(Pub), TAG(Food) TAG(Social), TAG(EraMedieval), TAG(EraModern)
+TEMPLATE(The ADJECTIVE[[Metal, Colour]] NOUN[[Container, Cutlery, Instrument][EraMedieval]]), TAG(Pub), TAG(Food) TAG(Social), TAG(EraMedieval), TAG(EraModern)
+TEMPLATE(The ADJECTIVE[[Quality, Age][Positive, Age][Impersonal]] NOUN[[Mammal][Large]]), TAG(Pub), TAG(Food) TAG(Social), TAG(EraMedieval), TAG(EraModern)
+TEMPLATE(The ADJECTIVE[[Quality, Age][Positive, Age][Impersonal]] NOUN[[Container, Cutlery, Instrument][EraMedieval]]), TAG(Pub), TAG(Food) TAG(Social), TAG(EraMedieval), TAG(EraModern)
+TEMPLATE(NOUN[[FirstName]]'s), TAG(Pub), TAG(Food) TAG(Social), TAG(EraMedieval), TAG(EraModern)
 // Tavern Suffix
-TEMPLATE(The ADJECTIVE[[Colour, Metal]] NOUN[[Mammal][Large]] Tavern), TAG(Pub), TAG(EraMedieval)
-TEMPLATE(The ADJECTIVE[[Metal, Colour]] NOUN[[Container, Cutlery, Instrument][EraMedieval]] Tavern), TAG(Pub), TAG(EraMedieval)
-TEMPLATE(The ADJECTIVE[[Quality, Age][Positive, Age][Impersonal]] NOUN[[Mammal][Large]] Tavern), TAG(Pub), TAG(EraMedieval)
-TEMPLATE(The ADJECTIVE[[Quality, Age][Positive, Age][Impersonal]] NOUN[[Container, Cutlery, Instrument][EraMedieval]] Tavern), TAG(Pub), TAG(EraMedieval)
+TEMPLATE(The ADJECTIVE[[Colour, Metal]] NOUN[[Mammal][Large]] Tavern), TAG(Pub), TAG(Food) TAG(Social), TAG(EraMedieval)
+TEMPLATE(The ADJECTIVE[[Metal, Colour]] NOUN[[Container, Cutlery, Instrument][EraMedieval]] Tavern), TAG(Pub), TAG(Food) TAG(Social), TAG(EraMedieval)
+TEMPLATE(The ADJECTIVE[[Quality, Age][Positive, Age][Impersonal]] NOUN[[Mammal][Large]] Tavern), TAG(Pub), TAG(Food) TAG(Social), TAG(EraMedieval)
+TEMPLATE(The ADJECTIVE[[Quality, Age][Positive, Age][Impersonal]] NOUN[[Container, Cutlery, Instrument][EraMedieval]] Tavern), TAG(Pub), TAG(Food) TAG(Social), TAG(EraMedieval)
 // Hotels
 // Thearters
+TEMPLATE(The ADJECTIVE[[Quality, Age][Positive, Age][Impersonal]] NOUN[[Mammal][Large]] Theater), TAG(Social), TAG(Theater), TAG(EraAll)
+TEMPLATE(The ADJECTIVE[[Quality, Age][Positive, Age][Impersonal]] NOUN[[Mammal][Large]] Music Hall), TAG(Social), TAG(Music), TAG(EraAll)
+TEMPLATE(The ADJECTIVE[[Quality, Age][Positive, Age][Impersonal]] NOUN[[Mammal][Large]] Cinema), TAG(Social), TAG(EraModern)
 // Clubs
+// Casinos
+// Tattoo Parlor
+// Gym

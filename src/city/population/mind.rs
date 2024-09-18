@@ -66,6 +66,7 @@ pub mod mind {
         pub description: PhysicalDescription,
         pub personality: Personality,
         pub dieties: HashSet<Uuid>,
+        pub employer: Option<Uuid>,
     }
 
     impl Mind {
@@ -146,6 +147,7 @@ pub mod mind {
             description: random_description(&dict),
             personality,
             dieties,
+            employer: None,
         };
     }
 
