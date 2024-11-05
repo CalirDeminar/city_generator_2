@@ -20,7 +20,7 @@ pub mod mind {
     };
     use uuid::Uuid;
 
-    #[derive(PartialEq, Debug, Clone)]
+    #[derive(PartialEq, Debug, Clone, Hash, Eq)]
     pub enum Gender {
         Male,
         Female,
@@ -39,7 +39,7 @@ pub mod mind {
 
     const AMBIGUOUS_GENDER_CHANCE: f32 = 0.1;
 
-    #[derive(PartialEq, Debug, Clone)]
+    #[derive(PartialEq, Debug, Clone, Hash, Eq)]
     pub enum Sexuality {
         Hetrosexual,
         Homosexual,
@@ -103,6 +103,14 @@ pub mod mind {
                     );
                 }
             }
+        }
+        pub fn is_single(self: &Self) -> bool {
+            return self.sexuality.eq(&Sexuality::Asexual)
+                || self.relations.iter().any(|(_, verbs)| {
+                    verbs
+                        .iter()
+                        .any(|v| vec![RelationVerb::Partner, RelationVerb::Spouse].contains(v))
+                });
         }
     }
 

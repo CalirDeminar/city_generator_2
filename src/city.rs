@@ -12,11 +12,7 @@ pub mod city {
     use super::{
         area::area::{Area, AreaId},
         culture::culture::{random_culture, Culture},
-        dieties::dieties::{Diety, DietyId},
-        population::{
-            mind::{mind::random_mind, relations::friends::friends::temp_add_friends},
-            population::Population,
-        },
+        population::{mind::mind::random_mind, population::Population},
     };
 
     #[derive(PartialEq, Debug, Clone)]
@@ -49,7 +45,24 @@ pub mod city {
     impl City {
         pub fn simulate_year(self: &mut Self) {
             self.year += 1;
-            temp_add_friends(self);
+            self.temp_add_friends();
+            self.update_mind_partner_relations();
+        }
+        pub fn current_citizens(self: &Self) -> Vec<Uuid> {
+            return self
+                .population
+                .values()
+                .filter(|c| c.alive)
+                .map(|m| m.id)
+                .collect();
+        }
+        pub fn current_single_citizens(self: &Self) -> Vec<Uuid> {
+            return self
+                .population
+                .values()
+                .filter(|c| c.alive && c.is_single())
+                .map(|m| m.id)
+                .collect();
         }
     }
 

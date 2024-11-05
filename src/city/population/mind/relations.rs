@@ -1,4 +1,5 @@
 pub mod friends;
+pub mod partners;
 pub mod relations {
     use std::fmt;
 

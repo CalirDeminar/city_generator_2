@@ -116,54 +116,57 @@ pub mod friends {
         return city;
     }
 
-    pub fn temp_add_friends<'a>(city: &'a mut City) -> &'a mut City {
-        let mut rng = rand::thread_rng();
-        let city_clone = city.clone();
-        let mind_ids = city_clone.population.keys().clone();
-        let age_cache = generate_age_cache(&city);
-        for m_id in mind_ids.clone() {
-            let mind_clone = city.population.get(&m_id).unwrap().clone();
-            let social_relations = filter_to_social_relations(&mind_clone.relations);
-            let current_friends: HashSet<&Uuid> =
-                HashSet::from_iter(social_relations.iter().map(|(id, _rest)| id));
-            let friend_count = current_friends.len();
-            let to_add = ((rng.gen::<f32>() * 20.0) as i32 - friend_count as i32).max(0) as usize;
+    impl City {
+        pub fn temp_add_friends(self: &mut Self) {
+            let city = self;
+            let mut rng = rand::thread_rng();
+            let city_clone = city.clone();
+            let mind_ids = city_clone.current_citizens();
+            let age_cache = generate_age_cache(&city);
+            for m_id in mind_ids.clone() {
+                let mind_clone = city.population.get(&m_id).unwrap().clone();
+                let social_relations = filter_to_social_relations(&mind_clone.relations);
+                let current_friends: HashSet<&Uuid> =
+                    HashSet::from_iter(social_relations.iter().map(|(id, _rest)| id));
+                let friend_count = current_friends.len();
+                let to_add =
+                    ((rng.gen::<f32>() * 20.0) as i32 - friend_count as i32).max(0) as usize;
 
-            let source_list = temp_generate_eligible_friend_list(
-                &age_cache,
-                (mind_clone.age - 5).max(5),
-                mind_clone.age + 5,
-                &current_friends,
-            );
-            for _i in 0..to_add {
-                let index = (rng.gen::<f32>() * source_list.len() as f32) as usize;
-                let target_mind_id = source_list.get(index).unwrap();
-                let source_mind_mut = city.population.get_mut(&m_id).unwrap();
-                if !source_mind_mut.relations.contains_key(&target_mind_id) {
+                let source_list = temp_generate_eligible_friend_list(
+                    &age_cache,
+                    (mind_clone.age - 5).max(5),
+                    mind_clone.age + 5,
+                    &current_friends,
+                );
+                for _i in 0..to_add {
+                    let index = (rng.gen::<f32>() * source_list.len() as f32) as usize;
+                    let target_mind_id = source_list.get(index).unwrap();
+                    let source_mind_mut = city.population.get_mut(&m_id).unwrap();
+                    if !source_mind_mut.relations.contains_key(&target_mind_id) {
+                        source_mind_mut
+                            .relations
+                            .insert(target_mind_id.clone(), Vec::new());
+                    }
                     source_mind_mut
                         .relations
-                        .insert(target_mind_id.clone(), Vec::new());
-                }
-                source_mind_mut
-                    .relations
-                    .get_mut(&target_mind_id)
-                    .unwrap()
-                    .push(RelationVerb::Acquaintance);
+                        .get_mut(&target_mind_id)
+                        .unwrap()
+                        .push(RelationVerb::Acquaintance);
 
-                let target_mind_mut = city.population.get_mut(&target_mind_id).unwrap();
-                if !target_mind_mut.relations.contains_key(&m_id) {
-                    target_mind_mut.relations.insert(m_id.clone(), Vec::new());
+                    let target_mind_mut = city.population.get_mut(&target_mind_id).unwrap();
+                    if !target_mind_mut.relations.contains_key(&m_id) {
+                        target_mind_mut.relations.insert(m_id.clone(), Vec::new());
+                    }
+                    target_mind_mut
+                        .relations
+                        .get_mut(&m_id)
+                        .unwrap()
+                        .push(RelationVerb::Acquaintance);
                 }
-                target_mind_mut
-                    .relations
-                    .get_mut(&m_id)
-                    .unwrap()
-                    .push(RelationVerb::Acquaintance);
+            }
+            for m in mind_ids {
+                temp_friend_evolution(city, &m);
             }
         }
-        for m in mind_ids {
-            temp_friend_evolution(city, m);
-        }
-        return city;
     }
 }
