@@ -118,6 +118,8 @@ NOUN(Water), TAG(DivineConcept), TAG(EraAll), TAG(Lakes), TAG(Oceans), TAG(River
     NOUN(Rivers), TAG(DivineConcept), TAG(EraAll), TAG(Water), TAG(Ϝish), TAG(Lakes), TAG(Oceans)
     NOUN(Rain), TAG(DivineConcept), TAG(EraAll), TAG(Water), TAG(Weather), TAG(Agriculture), TAG(Fertility), TAG(Lightning), TAG(Nature), TAG(Plants), TAG(Rainbows), TAG(Storms), TAG(Thunder), TAG(Trees)
 NOUN(Wealth), TAG(DivineConcept), TAG(EraAll), TAG(Jewels), TAG(Trade), TAG(WithoutSacrifice)
+    NOUN(Markets), TAG(DivineConcept), TAG(EraAll), TAG(Wealth), TAG(WithoutSacrifice)
+    NOUN(Investment), TAG(DivineConcept), TAG(EraAll), TAG(Wealth), TAG(WithoutSacrifice)
 NOUN(Weather), TAG(DivineConcept), TAG(EraAll), TAG(Lightning), TAG(Rain), TAG(Rainbows), TAG(Storms), TAG(Thunder), TAG(Wind)
     NOUN(Lightning), TAG(DivineConcept), TAG(EraAll), TAG(Weather), TAG(Storms), TAG(Thunder)
     NOUN(Rainbows), TAG(DivineConcept), TAG(EraAll), TAG(Weather), TAG(Light), TAG(Rain), TAG(Skies)
@@ -129,13 +131,22 @@ NOUN(Wisdom), TAG(DivineConcept), TAG(EraAll), TAG(Scholarship)
 NOUN(Youth), TAG(DivineConcept), TAG(EraAll), TAG(Birth), TAG(Children), TAG(Longevity), TAG(WithoutDeath)
 // TODO 
 // Add Seasons
+NOUN(Spring), TAG(DivineConcept), TAG(EraAll), TAG(Seasons), TAG(Rebirth)
+NOUN(Summer), TAG(DivineConcept), TAG(EraAll), TAG(Seasons), TAG(Light), TAG(Fire)
+NOUN(Autumn), TAG(DivineConcept), TAG(EraAll), TAG(Seasons), TAG(Death)
+NOUN(Winter), TAG(DivineConcept), TAG(EraAll), TAG(Seasons), TAG(Darkness), TAG(Storms)
 // Add Lovecraftian concepts
-//NOUN(The Deep), TAG(DivineConcept), TAG(EraAll), TAG(Oceans)
-//    NOUN(The Dark Abyss), TAG(DivineConcept), TAG(EraAll), TAG(The Deep)
-//    NOUN(Ocean Whispers), TAG(DivineConcept), TAG(EraAll), TAG(Oceans), TAG(The Deep), TAG(WithoutSilence)
-//    NOUN(The Drowning End of All), TAG(DivineConcept), TAG(EraAll), TAG(The Deep), TAG(WithoutBirth), TAG(WithoutHealing)
-//NOUN(Celestial Knowledge), TAG(DivineConcept), TAG(EraAll), TAG(Stars), TAG(Scholarship)
-//    NOUN(Voices of the Stars), TAG(DivineConcept), TAG(EraAll), TAG(Celestial Knowledge), TAG(Stars)
+NOUN(The Deep), TAG(DivineConcept), TAG(EraAll), TAG(Oceans)
+    NOUN(The Dark Abyss), TAG(DivineConcept), TAG(EraAll), TAG(The Deep)
+    NOUN(Ocean Whispers), TAG(DivineConcept), TAG(EraAll), TAG(Oceans), TAG(The Deep), TAG(WithoutSilence)
+    NOUN(The Drowning End of All), TAG(DivineConcept), TAG(EraAll), TAG(The Deep), TAG(WithoutBirth), TAG(WithoutHealing)
+NOUN(Celestial Knowledge), TAG(DivineConcept), TAG(EraAll), TAG(Stars), TAG(Scholarship)
+    NOUN(Voices of the Stars), TAG(DivineConcept), TAG(EraAll), TAG(Celestial Knowledge), TAG(Stars)
 // Add Emotions
 // Add Competion
 // Add "Modern" and "Futureistic" concepts
+// Modern
+NOUN(Electricity), TAG(DivineConcept), TAG(Modern)
+NOUN(Mechanics), TAG(DivineConcept), TAG(Modern)
+NOUN(Computation), TAG(DivineConcept), TAG(Modern)
+NOUN(Information), TAG(DivineConcept), TAG(Modern)
