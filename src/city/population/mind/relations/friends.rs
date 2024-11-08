@@ -5,7 +5,7 @@ pub mod friends {
         city::City,
         population::mind::{mind::MindId, relations::relations::RelationVerb},
     };
-    use rand::Rng;
+    use rand::{seq::SliceRandom, Rng};
     use uuid::Uuid;
 
     pub const SOCIAL_RELATIONS: [RelationVerb; 3] = [
@@ -29,8 +29,8 @@ pub mod friends {
     }
 
     fn filter_to_social_relations(
-        r: &HashMap<Uuid, Vec<RelationVerb>>,
-    ) -> HashMap<Uuid, Vec<RelationVerb>> {
+        r: &HashMap<Uuid, HashSet<RelationVerb>>,
+    ) -> HashMap<Uuid, HashSet<RelationVerb>> {
         return r
             .iter()
             .filter(|(_id, verb_set)| verb_set.iter().any(|v| SOCIAL_RELATIONS.contains(&v)))
@@ -55,6 +55,7 @@ pub mod friends {
                 }
             }
         }
+        output.shuffle(&mut rand::thread_rng());
         return output;
     }
 
@@ -103,14 +104,14 @@ pub mod friends {
                 let add = to_add.unwrap();
                 let m = city.population.get_mut(mind_id).unwrap();
                 if !m.relations.contains_key(target_id) {
-                    m.relations.insert(target_id.clone(), Vec::new());
+                    m.relations.insert(target_id.clone(), HashSet::new());
                 }
-                m.relations.get_mut(target_id).unwrap().push(add.clone());
+                m.relations.get_mut(target_id).unwrap().insert(add.clone());
                 let t = city.population.get_mut(target_id).unwrap();
                 if !t.relations.contains_key(mind_id) {
-                    t.relations.insert(mind_id.clone(), Vec::new());
+                    t.relations.insert(mind_id.clone(), HashSet::new());
                 }
-                t.relations.get_mut(mind_id).unwrap().push(add.clone());
+                t.relations.get_mut(mind_id).unwrap().insert(add.clone());
             }
         }
         return city;
@@ -140,28 +141,33 @@ pub mod friends {
                 );
                 for _i in 0..to_add {
                     let index = (rng.gen::<f32>() * source_list.len() as f32) as usize;
-                    let target_mind_id = source_list.get(index).unwrap();
-                    let source_mind_mut = city.population.get_mut(&m_id).unwrap();
-                    if !source_mind_mut.relations.contains_key(&target_mind_id) {
+                    let possible_target_mind_id = source_list.get(index);
+                    if possible_target_mind_id.is_some() {
+                        let target_mind_id = possible_target_mind_id.unwrap();
+                        let source_mind_mut = city.population.get_mut(&m_id).unwrap();
+                        if !source_mind_mut.relations.contains_key(&target_mind_id) {
+                            source_mind_mut
+                                .relations
+                                .insert(target_mind_id.clone(), HashSet::new());
+                        }
                         source_mind_mut
                             .relations
-                            .insert(target_mind_id.clone(), Vec::new());
-                    }
-                    source_mind_mut
-                        .relations
-                        .get_mut(&target_mind_id)
-                        .unwrap()
-                        .push(RelationVerb::Acquaintance);
+                            .get_mut(&target_mind_id)
+                            .unwrap()
+                            .insert(RelationVerb::Acquaintance);
 
-                    let target_mind_mut = city.population.get_mut(&target_mind_id).unwrap();
-                    if !target_mind_mut.relations.contains_key(&m_id) {
-                        target_mind_mut.relations.insert(m_id.clone(), Vec::new());
+                        let target_mind_mut = city.population.get_mut(&target_mind_id).unwrap();
+                        if !target_mind_mut.relations.contains_key(&m_id) {
+                            target_mind_mut
+                                .relations
+                                .insert(m_id.clone(), HashSet::new());
+                        }
+                        target_mind_mut
+                            .relations
+                            .get_mut(&m_id)
+                            .unwrap()
+                            .insert(RelationVerb::Acquaintance);
                     }
-                    target_mind_mut
-                        .relations
-                        .get_mut(&m_id)
-                        .unwrap()
-                        .push(RelationVerb::Acquaintance);
                 }
             }
             for m in mind_ids {

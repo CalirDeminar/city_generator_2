@@ -47,9 +47,21 @@ pub mod mind {
         Bisexual,
     }
 
+    impl fmt::Display for Sexuality {
+        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+            match self {
+                Sexuality::Hetrosexual => write!(f, "straight"),
+                Sexuality::Homosexual => write!(f, "gay"),
+                Sexuality::Bisexual => write!(f, "bi"),
+                Sexuality::Asexual => write!(f, "asexual"),
+                _ => write!(f, ""),
+            }
+        }
+    }
+
     const HOMOSEXUALITY_CHANCE: f32 = 0.075;
     const ASEXUALITY_CHANCE: f32 = 0.05;
-    const BISEXUALITY_CHANCE: f32 = 0.75;
+    const BISEXUALITY_CHANCE: f32 = 0.075;
 
     pub type MindId = Uuid;
 
@@ -62,7 +74,7 @@ pub mod mind {
         pub age: u32,
         pub gender: Gender,
         pub sexuality: Sexuality,
-        pub relations: HashMap<MindId, Vec<RelationVerb>>,
+        pub relations: HashMap<MindId, HashSet<RelationVerb>>,
         pub description: PhysicalDescription,
         pub personality: Personality,
         pub dieties: HashSet<Uuid>,
@@ -70,10 +82,30 @@ pub mod mind {
     }
 
     impl Mind {
+        pub fn age(self: &mut Self) {
+            if self.alive {
+                self.age += 1;
+                let death_threashhold = (self.age as f32 / 60.0).powf(2.5) * 0.1;
+                println!("Death Threshhold {}: {:.2}", self.age, death_threashhold);
+                let mut rng = rand::thread_rng();
+                if rng.gen::<f32>() < death_threashhold {
+                    self.alive = false;
+                }
+            }
+        }
         pub fn inspect(self: &Self, city: &City) {
             println!(
-                "\n{} {}, {}, age: {}",
-                self.first_name, self.last_name, self.gender, self.age
+                "\n{} {}, {}, age: {},  {}",
+                self.first_name,
+                self.last_name,
+                self.gender,
+                self.age,
+                if self.alive { "Alive" } else { "Dead" }
+            );
+            println!(
+                "They are {} and {}",
+                self.sexuality,
+                if self.is_single() { "Single" } else { "Taken" }
             );
             println!("{}", self.description.render(None));
             let traits: Vec<String> = self
@@ -105,12 +137,10 @@ pub mod mind {
             }
         }
         pub fn is_single(self: &Self) -> bool {
-            return self.sexuality.eq(&Sexuality::Asexual)
+            return !(self.sexuality.eq(&Sexuality::Asexual)
                 || self.relations.iter().any(|(_, verbs)| {
-                    verbs
-                        .iter()
-                        .any(|v| vec![RelationVerb::Partner, RelationVerb::Spouse].contains(v))
-                });
+                    verbs.contains(&RelationVerb::Spouse) || verbs.contains(&RelationVerb::Partner)
+                }));
         }
     }
 
@@ -125,10 +155,11 @@ pub mod mind {
                 .unwrap();
             dieties.insert(random_diety.id.clone());
         }
+        let age_offset = rand::thread_rng().gen::<f32>() * 30.0;
         return Mind {
             id: Uuid::new_v4(),
             alive: true,
-            age: 30,
+            age: culture.adult_age + (age_offset as u32),
             first_name: dict
                 .get_random_word((
                     WordType::Noun,

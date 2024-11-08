@@ -3,7 +3,7 @@ pub mod partners;
 pub mod relations {
     use std::fmt;
 
-    #[derive(PartialEq, Debug, Clone)]
+    #[derive(PartialEq, Debug, Clone, Eq, Hash)]
     pub enum RelationVerb {
         // family
         Parent,
@@ -41,6 +41,10 @@ pub mod relations {
                 RelationVerb::Acquaintance => write!(f, "Acquaintance"),
                 RelationVerb::Friend => write!(f, "Friend"),
                 RelationVerb::CloseFriend => write!(f, "Close Friend"),
+                RelationVerb::Partner => write!(f, "Partner"),
+                RelationVerb::Spouse => write!(f, "Spouse"),
+                RelationVerb::ExPartner => write!(f, "Ex-Partner"),
+                RelationVerb::ExSpouse => write!(f, "Ex-Spouse"),
                 _ => write!(f, ""),
             }
         }

@@ -9,6 +9,8 @@ pub mod city {
     use procgen_templater::dictionary::dictionary::Dictionary;
     use uuid::Uuid;
 
+    use crate::city::population::mind::mind::Mind;
+
     use super::{
         area::area::{Area, AreaId},
         culture::culture::{random_culture, Culture},
@@ -45,8 +47,14 @@ pub mod city {
     impl City {
         pub fn simulate_year(self: &mut Self) {
             self.year += 1;
+            self.increment_citizen_ages();
             self.temp_add_friends();
             self.update_mind_partner_relations();
+        }
+        fn increment_citizen_ages(self: &mut Self) {
+            for citizen in self.population.values_mut() {
+                citizen.age();
+            }
         }
         pub fn current_citizens(self: &Self) -> Vec<Uuid> {
             return self
@@ -63,6 +71,19 @@ pub mod city {
                 .filter(|c| c.alive && c.is_single())
                 .map(|m| m.id)
                 .collect();
+        }
+        pub fn inspect_population(self: &Self) {
+            let living_citizens: Vec<&Mind> =
+                self.population.values().filter(|m| m.alive).collect();
+            println!("Citizens: {}", living_citizens.len());
+            let single_citizens: Vec<&&Mind> =
+                living_citizens.iter().filter(|m| m.is_single()).collect();
+            println!(
+                "Single Citizens: {}/{} - {:.2}%",
+                single_citizens.len(),
+                living_citizens.len(),
+                1.0 - (single_citizens.len() as f32 / living_citizens.len() as f32)
+            );
         }
     }
 

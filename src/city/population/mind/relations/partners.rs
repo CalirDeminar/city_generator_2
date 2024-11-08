@@ -1,19 +1,20 @@
 pub mod partners {
     use std::collections::HashSet;
 
-    use rand::Rng;
+    use procgen_templater::dictionary::dictionary::build_dictionary_from_folder;
+    use rand::{seq::SliceRandom, Rng};
     use uuid::Uuid;
 
     use crate::city::{
-        city::City,
-        culture::culture::Culture,
+        city::{City, Era},
+        culture::culture::random_culture,
         population::mind::{
-            mind::{Gender, Mind, Sexuality},
+            mind::{random_mind, Gender, Mind, Sexuality},
             relations::relations::RelationVerb,
         },
     };
 
-    const PARTNER_CHANCE_GENERAL: f32 = 0.3; // multiple annual chances
+    const PARTNER_CHANCE_GENERAL: f32 = 0.33; // multiple annual chances
     const PARTNER_MARRIAGE_RATE: f32 = 0.075; // single anunal chance
     const PARTNER_SPLIT_RATE: f32 = 0.06; // single annual chance
     const MARRIAGE_SPLIT_RATE: f32 = 0.03; // single annual chance
@@ -66,21 +67,21 @@ pub mod partners {
         let mut reference_citizens = city.population.clone();
 
         for id in &citizen_ids {
-            // let mut citizens = city.population.values_mut().filter(|c| c.alive);
-            // let mind = citizens.find(|c| c.id.eq(id)).unwrap();
             let population = &mut city.population;
             let mind = population.get(id).unwrap().clone();
 
-            if mind.is_single() && rng.gen::<f32>() > PARTNER_CHANCE_GENERAL {
-                let single_friend_ids: Vec<&Uuid> = mind
+            if mind.is_single() && rng.gen::<f32>() < PARTNER_CHANCE_GENERAL {
+                let mut single_friend_ids: Vec<&Uuid> = mind
                     .relations
                     .iter()
                     .filter(|(r_id, verbs)| {
-                        verbs.contains(&RelationVerb::CloseFriend)
-                            && reference_citizens.get(&r_id).unwrap().is_single()
+                        return (verbs.contains(&RelationVerb::CloseFriend)
+                            || verbs.contains(&RelationVerb::Friend))
+                            && reference_citizens.get(&r_id).unwrap().is_single();
                     })
                     .map(|(id, _)| id)
                     .collect();
+                single_friend_ids.shuffle(&mut rand::thread_rng());
                 let possible_target = single_friend_ids.iter().find(|f_id| {
                     let f = reference_citizens.get(f_id).unwrap();
                     return is_sexuality_compatible(&mind, f) && f.age > culture.adult_age;
@@ -89,18 +90,24 @@ pub mod partners {
                     let target_id = possible_target.unwrap();
 
                     let mind_mut = population.get_mut(&id).unwrap();
+                    mind_mut.relations.get_mut(&target_id).unwrap().retain(|v| {
+                        !(v.eq(&RelationVerb::CloseFriend) || v.eq(&RelationVerb::Friend))
+                    });
                     mind_mut
                         .relations
                         .get_mut(&target_id)
                         .unwrap()
-                        .push(RelationVerb::Partner);
+                        .insert(RelationVerb::Partner);
 
                     let target_mut = population.get_mut(&target_id).unwrap();
+                    target_mut.relations.get_mut(&id).unwrap().retain(|v| {
+                        !(v.eq(&RelationVerb::CloseFriend) || v.eq(&RelationVerb::Friend))
+                    });
                     target_mut
                         .relations
                         .get_mut(&id)
                         .unwrap()
-                        .push(RelationVerb::Partner);
+                        .insert(RelationVerb::Partner);
 
                     reference_citizens = city.population.clone();
                 }
@@ -112,7 +119,7 @@ pub mod partners {
     fn temp_partner_evolution<'a>(city: &'a mut City) -> &'a mut City {
         let mut rng = rand::thread_rng();
         let citizen_ids = city.current_citizens();
-        let reference_citizens = city.population.clone();
+        let mut reference_citizens = city.population.clone();
 
         let mut processed: HashSet<Uuid> = HashSet::new();
         for id in citizen_ids {
@@ -136,7 +143,11 @@ pub mod partners {
                     } else {
                         PARTNER_SPLIT_RATE
                     };
-                    let mut new_verb: Option<RelationVerb> = None;
+                    let mut new_verb: Option<RelationVerb> = if verb.eq(&RelationVerb::Partner) {
+                        Some(RelationVerb::ExPartner)
+                    } else {
+                        Some(RelationVerb::ExSpouse)
+                    };
                     if rng.gen::<f32>() > split_chance {
                         new_verb = Some(verb.clone());
                     }
@@ -144,34 +155,55 @@ pub mod partners {
                         new_verb = Some(RelationVerb::Spouse);
                     }
                     let mind_mut = city.population.get_mut(&id).unwrap();
+                    if new_verb.is_some() {
+                        mind_mut
+                            .relations
+                            .get_mut(partner_id)
+                            .unwrap()
+                            .retain(|v| !v.eq(&verb));
+                        mind_mut
+                            .relations
+                            .get_mut(partner_id)
+                            .unwrap()
+                            .insert(new_verb.clone().unwrap());
 
-                    mind_mut
-                        .relations
-                        .get_mut(partner_id)
-                        .unwrap()
-                        .retain(|v| !v.eq(&verb));
-                    mind_mut
-                        .relations
-                        .get_mut(partner_id)
-                        .unwrap()
-                        .push(new_verb.clone().unwrap());
+                        let partner_mut = city.population.get_mut(&partner_id).unwrap();
 
-                    let partner_mut = city.population.get_mut(&partner_id).unwrap();
-
-                    partner_mut
-                        .relations
-                        .get_mut(partner_id)
-                        .unwrap()
-                        .retain(|v| !v.eq(&verb));
-                    partner_mut
-                        .relations
-                        .get_mut(partner_id)
-                        .unwrap()
-                        .push(new_verb.clone().unwrap());
+                        partner_mut
+                            .relations
+                            .get_mut(&id)
+                            .unwrap()
+                            .retain(|v| !v.eq(&verb));
+                        partner_mut
+                            .relations
+                            .get_mut(&id)
+                            .unwrap()
+                            .insert(new_verb.clone().unwrap());
+                    }
                 }
             }
+            reference_citizens = city.population.clone();
         }
 
         return city;
+    }
+
+    #[test]
+    fn test_matching() {
+        let dict = build_dictionary_from_folder("./data_files/");
+        let culture = random_culture(&dict, Era::Medieval);
+        let mut mind = random_mind(&dict, &culture);
+        mind.gender = Gender::Male;
+        mind.sexuality = Sexuality::Hetrosexual;
+        println!(
+            "Straight Male Targets: {:#?}",
+            target_sexuality_genders(&mind)
+        );
+        mind.gender = Gender::Female;
+        mind.sexuality = Sexuality::Hetrosexual;
+        println!(
+            "Straight Female Targets: {:#?}",
+            target_sexuality_genders(&mind)
+        );
     }
 }
