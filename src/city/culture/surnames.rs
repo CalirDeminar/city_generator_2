@@ -22,20 +22,42 @@ pub mod surnames {
             mind_2_last: String,
         ) -> String {
             // TODO - dehiphenite case
+            let mut rng = rand::thread_rng();
+            let mut mind_1_last_splits: Vec<&str> = mind_1_last.split('-').into_iter().collect();
+            mind_1_last_splits.shuffle(&mut rng);
+            let mut mind_2_last_splits: Vec<&str> = mind_2_last.split('-').into_iter().collect();
+
+            let all_sub_names_identicle = mind_1_last_splits
+                .iter()
+                .all(|m1| mind_2_last_splits.iter().all(|m2| m2.eq(m1)));
+            if all_sub_names_identicle && self.between.len() > 0 {
+                return mind_1_last_splits.first().unwrap().to_string();
+            }
+            mind_2_last_splits.shuffle(&mut rng);
+            while !all_sub_names_identicle
+                && mind_1_last_splits.len() > 1
+                && mind_2_last_splits.len() > 1
+                && mind_1_last_splits
+                    .first()
+                    .unwrap()
+                    .eq(mind_2_last_splits.first().unwrap())
+            {
+                mind_2_last_splits.shuffle(&mut rng);
+            }
             let mut output = String::new();
             output.push_str(&self.pre);
             if self.mind_1_first_present {
                 output.push_str(&mind_1_first);
             }
             if self.mind_1_last_present {
-                output.push_str(&mind_1_last);
+                output.push_str(mind_1_last_splits.first().unwrap());
             }
             output.push_str(&self.between);
             if self.mind_2_first_present {
                 output.push_str(&mind_2_first);
             }
             if self.mind_2_last_present {
-                output.push_str(&mind_2_last);
+                output.push_str(mind_2_last_splits.first().unwrap());
             }
             output.push_str(&self.post);
             return output;

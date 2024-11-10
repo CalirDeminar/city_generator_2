@@ -156,6 +156,22 @@ pub mod partners {
                     }
                     let mind_mut = city.population.get_mut(&id).unwrap();
                     if new_verb.is_some() {
+                        let mut surname_formats = city.culture.marriage_surname_formats.clone();
+                        surname_formats.shuffle(&mut rng);
+                        let surname_format = surname_formats.first().unwrap();
+                        let partner = reference_citizens.get(partner_id).unwrap();
+                        let new_mind_last_name = surname_format.0.render(
+                            mind.first_name.clone(),
+                            mind.last_name.clone(),
+                            partner.first_name.clone(),
+                            partner.last_name.clone(),
+                        );
+                        let new_partner_last_name = surname_format.1.render(
+                            mind.first_name.clone(),
+                            mind.last_name.clone(),
+                            partner.first_name.clone(),
+                            partner.last_name.clone(),
+                        );
                         mind_mut
                             .relations
                             .get_mut(partner_id)
@@ -166,7 +182,11 @@ pub mod partners {
                             .get_mut(partner_id)
                             .unwrap()
                             .insert(new_verb.clone().unwrap());
-
+                        if new_verb.eq(&Some(RelationVerb::Spouse)) {
+                            mind_mut.last_name = new_mind_last_name;
+                        } else if new_verb.eq(&Some(RelationVerb::ExSpouse)) {
+                            mind_mut.last_name = mind_mut.origional_last_name.clone();
+                        }
                         let partner_mut = city.population.get_mut(&partner_id).unwrap();
 
                         partner_mut
@@ -179,6 +199,13 @@ pub mod partners {
                             .get_mut(&id)
                             .unwrap()
                             .insert(new_verb.clone().unwrap());
+                        if new_verb.eq(&Some(RelationVerb::Spouse)) {
+                            partner_mut.last_name = new_partner_last_name;
+                        } else if new_verb.eq(&Some(RelationVerb::ExSpouse)) {
+                            partner_mut.last_name = partner_mut.origional_last_name.clone();
+                        }
+
+                        // TODO - Marriage Surname Changes
                     }
                 }
             }

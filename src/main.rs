@@ -6,12 +6,12 @@ fn main() {
     let dict = build_dictionary_from_folder("./data_files");
 
     let mut city = random_city(&dict, Era::Medieval, 50);
-    for i in 0..100 {
+    for i in 0..25 {
         println!("Year {} ----------", i);
         city.inspect_population();
         city.simulate_year();
     }
-    for mind in city.population.values() {
-        // mind.inspect(&city);
+    for id in city.current_citizens() {
+        city.population.get(&id).unwrap().inspect(&city);
     }
 }

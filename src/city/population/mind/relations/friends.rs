@@ -144,29 +144,31 @@ pub mod friends {
                     let possible_target_mind_id = source_list.get(index);
                     if possible_target_mind_id.is_some() {
                         let target_mind_id = possible_target_mind_id.unwrap();
-                        let source_mind_mut = city.population.get_mut(&m_id).unwrap();
-                        if !source_mind_mut.relations.contains_key(&target_mind_id) {
+                        if !mind_clone.is_relation_of(target_mind_id) {
+                            let source_mind_mut = city.population.get_mut(&m_id).unwrap();
+                            if !source_mind_mut.relations.contains_key(&target_mind_id) {
+                                source_mind_mut
+                                    .relations
+                                    .insert(target_mind_id.clone(), HashSet::new());
+                            }
                             source_mind_mut
                                 .relations
-                                .insert(target_mind_id.clone(), HashSet::new());
-                        }
-                        source_mind_mut
-                            .relations
-                            .get_mut(&target_mind_id)
-                            .unwrap()
-                            .insert(RelationVerb::Acquaintance);
+                                .get_mut(&target_mind_id)
+                                .unwrap()
+                                .insert(RelationVerb::Acquaintance);
 
-                        let target_mind_mut = city.population.get_mut(&target_mind_id).unwrap();
-                        if !target_mind_mut.relations.contains_key(&m_id) {
+                            let target_mind_mut = city.population.get_mut(&target_mind_id).unwrap();
+                            if !target_mind_mut.relations.contains_key(&m_id) {
+                                target_mind_mut
+                                    .relations
+                                    .insert(m_id.clone(), HashSet::new());
+                            }
                             target_mind_mut
                                 .relations
-                                .insert(m_id.clone(), HashSet::new());
+                                .get_mut(&m_id)
+                                .unwrap()
+                                .insert(RelationVerb::Acquaintance);
                         }
-                        target_mind_mut
-                            .relations
-                            .get_mut(&m_id)
-                            .unwrap()
-                            .insert(RelationVerb::Acquaintance);
                     }
                 }
             }

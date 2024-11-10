@@ -71,6 +71,7 @@ pub mod mind {
         pub alive: bool,
         pub first_name: String,
         pub last_name: String,
+        pub origional_last_name: String,
         pub age: u32,
         pub gender: Gender,
         pub sexuality: Sexuality,
@@ -85,8 +86,9 @@ pub mod mind {
         pub fn age(self: &mut Self) {
             if self.alive {
                 self.age += 1;
-                let death_threashhold = (self.age as f32 / 60.0).powf(2.5) * 0.1;
-                println!("Death Threshhold {}: {:.2}", self.age, death_threashhold);
+                let death_threashhold =
+                    ((self.age as f32 - 30.0) / 30.0).max(0.01).powf(2.25) * 0.1;
+                // println!("Death Threshhold {}: {:.2}", self.age, death_threashhold);
                 let mut rng = rand::thread_rng();
                 if rng.gen::<f32>() < death_threashhold {
                     self.alive = false;
@@ -128,9 +130,10 @@ pub mod mind {
                 let verbs: Vec<String> = verbs.iter().map(|v| format!("{}", v)).collect();
                 if verbs.len() > 0 {
                     println!(
-                        "   {} {}: {}",
+                        "   {} {}: {} {}",
                         r.first_name,
                         r.last_name,
+                        if r.alive { "" } else { "Late" },
                         render_list(verbs.iter().map(|v| v.as_str()).collect())
                     );
                 }
@@ -141,6 +144,24 @@ pub mod mind {
                 || self.relations.iter().any(|(_, verbs)| {
                     verbs.contains(&RelationVerb::Spouse) || verbs.contains(&RelationVerb::Partner)
                 }));
+        }
+        pub fn is_relation_of(self: &Self, other: &Uuid) -> bool {
+            let relation_verbs = vec![
+                RelationVerb::Parent,
+                RelationVerb::Grandparent,
+                RelationVerb::Child,
+                RelationVerb::Grandchild,
+                RelationVerb::Pibling,
+                RelationVerb::Nibling,
+                RelationVerb::Cousin,
+            ];
+            return self.relations.contains_key(other)
+                && self
+                    .relations
+                    .get(other)
+                    .unwrap()
+                    .iter()
+                    .any(|v| relation_verbs.contains(v));
         }
     }
 
@@ -156,6 +177,14 @@ pub mod mind {
             dieties.insert(random_diety.id.clone());
         }
         let age_offset = rand::thread_rng().gen::<f32>() * 30.0;
+        let last_name = dict
+            .get_random_word((
+                WordType::Noun,
+                vec![vec!["LastName".to_string()], vec![culture.era.to_string()]],
+            ))
+            .unwrap()
+            .base
+            .clone();
         return Mind {
             id: Uuid::new_v4(),
             alive: true,
@@ -172,14 +201,8 @@ pub mod mind {
                 .unwrap()
                 .base
                 .clone(),
-            last_name: dict
-                .get_random_word((
-                    WordType::Noun,
-                    vec![vec!["LastName".to_string()], vec![culture.era.to_string()]],
-                ))
-                .unwrap()
-                .base
-                .clone(),
+            last_name: last_name.clone(),
+            origional_last_name: last_name,
             gender,
             sexuality: random_sexuality(),
             relations: HashMap::new(),
