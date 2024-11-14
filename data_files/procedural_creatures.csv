@@ -1,0 +1,53 @@
+// Gods
+    // Fleshy
+        // giant smaller mammal Creature
+        TEMPLATE(giant NOUN[[Mammal][Tiny, Small, Normal, large]]), TAG(AncientCreature)
+        // giant large mammal Creature
+        TEMPLATE(large NOUN[[Mammal][Huge, Collosal]]), TAG(AncientCreature)
+
+        // giant smaller Invertabrate Creature
+        TEMPLATE(giant NOUN[[Insect][Tiny, Small, Normal, large]]), TAG(AncientCreature)
+        // giant smaller Reptile Creature
+        TEMPLATE(giant NOUN[[Reptile][Tiny, Small, Normal, large]]), TAG(AncientCreature)
+        // giant smaller Fish
+        TEMPLATE(giant NOUN[[Fish][Tiny, Small, Normal, large]]), TAG(AncientCreature)
+        // giant smaller Bird
+        TEMPLATE(giant NOUN[[Bird][Tiny, Small, Normal, large]]), TAG(AncientCreature)
+    // Other Composition
+        // giant smaller mammal
+        TEMPLATE(giant NOUN[[Mammal][Tiny, Small, Normal, large]] composed of NOUN[[AncientCreatureMaterial]]), TAG(AncientCreature)
+        // giant larger mammal
+        TEMPLATE(large NOUN[[Mammal][Huge, Collosal]] composed of NOUN[[AncientCreatureMaterial]]), TAG(AncientCreature)
+
+        // giant smaller Invertabrate Creature
+        TEMPLATE(giant NOUN[[Insect][Tiny, Small, Normal, large]] with an exoskeleton of NOUN[[AncientCreatureMaterial]]), TAG(AncientCreature)
+        // giant smaller Reptile Creature
+        TEMPLATE(giant NOUN[[Reptile][Tiny, Small, Normal, large]] with scales of NOUN[[AncientCreatureMaterial]]), TAG(AncientCreature)
+        // giant smaller Fish
+        TEMPLATE(giant NOUN[[Fish][Tiny, Small, Normal, large]] with scales of NOUN[[AncientCreatureMaterial]]), TAG(AncientCreature)
+        // giant smaller Bird
+        TEMPLATE(giant NOUN[[Bird][Tiny, Small, Normal, large]]) with feathers of NOUN[[AncientCreatureMaterial]], TAG(AncientCreature)
+
+
+// Predators
+    // Fleshy
+        // giant smaller mammal Creature
+        TEMPLATE(giant NOUN[[Mammal][Carnivore][Tiny, Small, Normal, large]]), TAG(AncientPredator)
+
+        // giant smaller Invertabrate Creature
+        TEMPLATE(giant NOUN[[Insect][Tiny, Small, Normal, large]]), TAG(AncientPredator)
+        // giant smaller Reptile Creature
+        TEMPLATE(giant NOUN[[Reptile][Tiny, Small, Normal, large]]), TAG(AncientPredator)
+        // giant smaller Bird
+        TEMPLATE(giant NOUN[[Bird][Carnivore, Scavenger][Tiny, Small, Normal, large]]), TAG(AncientPredator)
+
+    // Other Composition
+        // giant smaller mammal
+        TEMPLATE(giant NOUN[[Mammal][Carnivore][Tiny, Small, Normal, large]] composed of NOUN[[AncientCreatureMaterial]]), TAG(AncientPredator)
+
+        // giant smaller Invertabrate Creature
+        TEMPLATE(giant NOUN[[Insect][Tiny, Small, Normal, large]] with an exoskeleton of NOUN[[AncientCreatureMaterial]]), TAG(AncientPredator)
+        // giant smaller Reptile Creature
+        TEMPLATE(giant NOUN[[Reptile][Tiny, Small, Normal, large]] with scales of NOUN[[AncientCreatureMaterial]]), TAG(AncientPredator)
+        // giant smaller Bird
+        TEMPLATE(giant NOUN[[Bird][Carnivore, Scavenger][Tiny, Small, Normal, large]]) with feathers of NOUN[[AncientCreatureMaterial]], TAG(AncientPredator)

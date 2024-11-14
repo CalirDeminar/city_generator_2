@@ -21,6 +21,7 @@ pub mod dieties {
         pub realms: Vec<Word>,
         pub name: String,
         pub form: Word,
+        pub form2: String,
     }
 
     impl Diety {
@@ -30,8 +31,8 @@ pub mod dieties {
                 "{} god of {} takes the form of {} {}",
                 self.name,
                 render_list(realms),
-                a_or_an(&self.form.base),
-                self.form.base
+                a_or_an(&self.form2),
+                self.form2
             );
         }
     }
@@ -46,6 +47,9 @@ pub mod dieties {
     }
 
     pub fn random_diety(dict: &Dictionary) -> Diety {
+        let form2_template = dict
+            .get_random_template(vec![vec![String::from("AncientCreature")]])
+            .unwrap();
         return Diety {
             id: Uuid::new_v4(),
             realms: random_diety_realms(&dict, None),
@@ -61,6 +65,7 @@ pub mod dieties {
                 )
                 .unwrap()
                 .clone(),
+            form2: dict.render_template(&form2_template.id).unwrap(),
         };
     }
 
