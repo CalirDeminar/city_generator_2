@@ -28,7 +28,7 @@ pub mod dieties {
         pub fn render_summary(self: &Self) -> String {
             let realms: Vec<&str> = self.realms.iter().map(|r| r.base.as_str()).collect();
             return format!(
-                "{} god of {} takes the form of {} {}",
+                "{}; god of {} takes the form of {} {}",
                 self.name,
                 render_list(realms),
                 a_or_an(&self.form2),
@@ -50,14 +50,31 @@ pub mod dieties {
         let form2_template = dict
             .get_random_template(vec![vec![String::from("AncientCreature")]])
             .unwrap();
+        let name = dict
+            .get_random_word((WordType::Noun, vec![vec!["Name".to_string()]]))
+            .unwrap()
+            .base
+            .to_string();
+        let quality = dict
+            .get_random_word((
+                WordType::Adjective,
+                vec![vec![
+                    String::from("Age"),
+                    String::from("Height"),
+                    String::from("ObjectState"),
+                    String::from("BuildingState"),
+                    String::from("Quality"),
+                    String::from("Colour"),
+                    String::from("Build"),
+                ]],
+            ))
+            .unwrap()
+            .base
+            .to_string();
         return Diety {
             id: Uuid::new_v4(),
             realms: random_diety_realms(&dict, None),
-            name: dict
-                .get_random_word((WordType::Noun, vec![vec!["Name".to_string()]]))
-                .unwrap()
-                .base
-                .to_string(),
+            name: format!("{} the {}", name, quality),
             form: dict
                 .get_random_word_without(
                     (WordType::Noun, vec![vec!["Creature".to_string()]]),
