@@ -54,7 +54,6 @@ pub mod mind {
                 Sexuality::Homosexual => write!(f, "gay"),
                 Sexuality::Bisexual => write!(f, "bi"),
                 Sexuality::Asexual => write!(f, "asexual"),
-                _ => write!(f, ""),
             }
         }
     }
