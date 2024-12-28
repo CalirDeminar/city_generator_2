@@ -14,6 +14,7 @@ pub mod city {
     use super::{
         area::area::{Area, AreaId},
         culture::culture::{random_culture, Culture},
+        institutions::institutions::Institution,
         population::{mind::mind::random_mind, population::Population},
     };
 
@@ -41,6 +42,7 @@ pub mod city {
         pub culture: Culture,
         pub population: Population,
         pub areas: HashMap<AreaId, Area>,
+        pub institutions: HashMap<Uuid, Institution>,
         pub year: usize,
     }
 
@@ -48,6 +50,9 @@ pub mod city {
         pub fn simulate_year(self: &mut Self) {
             self.year += 1;
             self.increment_citizen_ages();
+            // employment
+            self.fire_percentage(5.0);
+            //social
             self.temp_add_friends();
             self.update_mind_partner_relations();
         }
@@ -100,6 +105,7 @@ pub mod city {
             culture,
             population,
             areas: HashMap::new(),
+            institutions: HashMap::new(),
             year: 0,
         };
     }
