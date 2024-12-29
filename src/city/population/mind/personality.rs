@@ -50,7 +50,7 @@ pub mod personality {
                 PersonalityTrait::Tolerant => write!(f, "Tolerant"),
                 PersonalityTrait::Reckless => write!(f, "Reckless"),
                 PersonalityTrait::Sloppy => write!(f, "Sloppy"),
-                PersonalityTrait::Disciplined => write!(f, "Discipline"),
+                PersonalityTrait::Disciplined => write!(f, "Disciplined"),
                 PersonalityTrait::Careful => write!(f, "Careful"),
                 PersonalityTrait::Unimaginative => write!(f, "Unimaginative"),
                 PersonalityTrait::Shallow => write!(f, "Shallow"),

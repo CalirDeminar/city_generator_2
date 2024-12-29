@@ -4,7 +4,7 @@ pub mod relations;
 pub mod mind {
     use crate::{
         city::{city::City, culture::culture::Culture, dieties::dieties::Diety},
-        grammar::grammar::render_list,
+        grammar::grammar::{a_or_an, render_list},
     };
 
     use super::{
@@ -104,11 +104,11 @@ pub mod mind {
                 if self.alive { "Alive" } else { "Dead" }
             );
             println!(
-                "They are {} and {}",
+                "  They are {} and {}",
                 self.sexuality,
                 if self.is_single() { "Single" } else { "Taken" }
             );
-            println!("{}", self.description.render(None));
+            println!("  {}", self.description.render(None));
             let traits: Vec<String> = self
                 .personality
                 .traits
@@ -116,20 +116,30 @@ pub mod mind {
                 .map(|i| i.to_string().to_ascii_lowercase())
                 .collect();
             println!(
-                "They are said to be {}",
+                "  They are said to be {}",
                 render_list(traits.iter().map(|t| t.as_str()).collect())
             );
             for d_id in &self.dieties {
                 let diety = city.culture.dieties.get(&d_id).unwrap();
-                println!("They worship {}. {}.", diety.name, diety.render_summary());
+                println!("  They worship {}. {}.", diety.name, diety.render_summary());
             }
-            println!("Relations: ");
+            if self.employer.is_some() {
+                let employer = city.institutions.get(&self.employer.unwrap()).unwrap();
+                let position = employer.staff.get(&self.id).unwrap();
+                println!(
+                    "  They work at: \"{}\" as {} {}",
+                    employer.name,
+                    a_or_an(&position.title),
+                    position.title
+                );
+            }
+            println!("  Relations: ");
             for (r_id, verbs) in &self.relations {
                 let r = city.population.get(&r_id).unwrap();
                 let verbs: Vec<String> = verbs.iter().map(|v| format!("{}", v)).collect();
                 if verbs.len() > 0 {
                     println!(
-                        "   {} {}: {} {}",
+                        "       {} {}: {} {}",
                         r.first_name,
                         r.last_name,
                         if r.alive { "" } else { "Late" },

@@ -47,11 +47,12 @@ pub mod city {
     }
 
     impl City {
-        pub fn simulate_year(self: &mut Self) {
+        pub fn simulate_year(self: &mut Self, dict: &Dictionary) {
             self.year += 1;
             self.increment_citizen_ages();
             // employment
-            self.fire_percentage(5.0);
+            self.fire_percentage(0.05);
+            self.fill_and_create_jobs(dict);
             //social
             self.temp_add_friends();
             self.update_mind_partner_relations();

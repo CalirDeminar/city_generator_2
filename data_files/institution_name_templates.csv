@@ -61,7 +61,7 @@ TEMPLATE(The ADJECTIVE[[Quality, Age][Positive, Age][Impersonal]] NOUN[[Containe
 // Thearters
 TEMPLATE(The ADJECTIVE[[Quality, Age][Positive, Age][Impersonal]] NOUN[[Mammal][Large]] Theater), TAG(Social), TAG(Theater), TAG(EraAll), TAG(InstitutionName)
 TEMPLATE(The ADJECTIVE[[Quality, Age][Positive, Age][Impersonal]] NOUN[[Mammal][Large]] Music Hall), TAG(Social), TAG(Music), TAG(EraAll), TAG(InstitutionName)
-TEMPLATE(The ADJECTIVE[[Quality, Age][Positive, Age][Impersonal]] NOUN[[Mammal][Large]] Cinema), TAG(Social), TAG(EraModern), TAG(InstitutionName)
+TEMPLATE(The ADJECTIVE[[Quality, Age][Positive, Age][Impersonal]] NOUN[[Mammal][Large]] Cinema), TAG(Social), TAG(Cinema), TAG(EraModern), TAG(InstitutionName)
 // Clubs
 // Casinos
 // Tattoo Parlor
