@@ -9,7 +9,7 @@ pub mod city {
     use procgen_templater::dictionary::dictionary::Dictionary;
     use uuid::Uuid;
 
-    use crate::city::population::mind::mind::Mind;
+    use crate::city::{institutions, population::mind::mind::Mind};
 
     use super::{
         area::area::{Area, AreaId},
@@ -56,10 +56,15 @@ pub mod city {
             //social
             self.temp_add_friends();
             self.update_mind_partner_relations();
+            self.generate_children(dict);
+
+            self.cleanup(5);
         }
         fn increment_citizen_ages(self: &mut Self) {
             for citizen in self.population.values_mut() {
-                citizen.age();
+                if citizen.alive {
+                    citizen.age();
+                }
             }
         }
         pub fn current_citizens(self: &Self) -> Vec<Uuid> {
@@ -91,13 +96,29 @@ pub mod city {
                 1.0 - (single_citizens.len() as f32 / living_citizens.len() as f32)
             );
         }
+        pub fn cleanup(self: &mut Self, interval: usize) {
+            let rem = self.year.checked_rem(interval);
+            if rem.is_some() && rem.unwrap().eq(&0) {
+                println!("Running Cleanup");
+                for mind in self.population.values_mut() {
+                    mind.cleanup();
+                    if mind.employer.is_some() && !mind.alive {
+                        let employer = self.institutions.get_mut(&mind.employer.unwrap()).unwrap();
+                        if employer.staff.contains_key(&mind.id) {
+                            employer.staff.remove(&mind.id);
+                        }
+                        mind.employer = None;
+                    }
+                }
+            }
+        }
     }
 
     pub fn random_city(dict: &Dictionary, era: Era, base_population: usize) -> City {
         let culture = random_culture(dict, era);
         let mut population: Population = HashMap::new();
         for _i in 0..base_population {
-            let m = random_mind(&dict, &culture);
+            let m = random_mind(&dict, &culture, 0);
             population.insert(m.id.clone(), m);
         }
         return City {

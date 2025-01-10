@@ -331,7 +331,7 @@ pub mod institutions {
             let institution_ref = self.institutions.clone();
             let mut unemployed: Vec<&Mind> = population_ref
                 .values()
-                .filter(|m| m.employer.is_none())
+                .filter(|m| m.employer.is_none() && m.age > self.culture.adult_age)
                 .collect();
             unemployed.shuffle(&mut rand::thread_rng());
 

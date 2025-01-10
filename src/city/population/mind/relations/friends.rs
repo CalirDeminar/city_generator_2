@@ -14,6 +14,20 @@ pub mod friends {
         RelationVerb::CloseFriend,
     ];
 
+    pub const FRIEND_EXCLUSIONS: [RelationVerb; 11] = [
+        RelationVerb::ExPartner,
+        RelationVerb::ExSpouse,
+        RelationVerb::Partner,
+        RelationVerb::Spouse,
+        RelationVerb::Parent,
+        RelationVerb::Child,
+        RelationVerb::Cousin,
+        RelationVerb::Grandchild,
+        RelationVerb::Grandparent,
+        RelationVerb::Pibling,
+        RelationVerb::Nibling,
+    ];
+
     fn generate_age_cache(city: &City) -> HashMap<u32, HashSet<Uuid>> {
         let mut cache: HashMap<u32, HashSet<Uuid>> = HashMap::new();
         for mind in city.population.values() {
@@ -34,6 +48,16 @@ pub mod friends {
         return r
             .iter()
             .filter(|(_id, verb_set)| verb_set.iter().any(|v| SOCIAL_RELATIONS.contains(&v)))
+            .map(|(i, j)| (i.clone(), j.clone()))
+            .collect();
+    }
+
+    fn filter_to_friend_exclusion_list(
+        r: &HashMap<Uuid, HashSet<RelationVerb>>,
+    ) -> HashMap<Uuid, HashSet<RelationVerb>> {
+        return r
+            .iter()
+            .filter(|(_id, verb_set)| verb_set.iter().any(|v| FRIEND_EXCLUSIONS.contains(&v)))
             .map(|(i, j)| (i.clone(), j.clone()))
             .collect();
     }
@@ -129,15 +153,19 @@ pub mod friends {
                 let social_relations = filter_to_social_relations(&mind_clone.relations);
                 let current_friends: HashSet<&Uuid> =
                     HashSet::from_iter(social_relations.iter().map(|(id, _rest)| id));
+                let temp_exclude = filter_to_friend_exclusion_list(&mind_clone.relations);
+                let mut excluded_relations: HashSet<&Uuid> =
+                    HashSet::from_iter(temp_exclude.iter().map(|(id, _rest)| id));
+                excluded_relations.extend(&current_friends);
                 let friend_count = current_friends.len();
                 let to_add =
                     ((rng.gen::<f32>() * 20.0) as i32 - friend_count as i32).max(0) as usize;
 
                 let source_list = temp_generate_eligible_friend_list(
                     &age_cache,
-                    (mind_clone.age - 5).max(5),
+                    (mind_clone.age as i32 - 5 as i32).max(5) as u32,
                     mind_clone.age + 5,
-                    &current_friends,
+                    &excluded_relations,
                 );
                 for _i in 0..to_add {
                     let index = (rng.gen::<f32>() * source_list.len() as f32) as usize;

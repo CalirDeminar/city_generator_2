@@ -79,6 +79,7 @@ pub mod mind {
         pub personality: Personality,
         pub dieties: HashSet<Uuid>,
         pub employer: Option<Uuid>,
+        pub year_of_birth: i32,
     }
 
     impl Mind {
@@ -96,11 +97,12 @@ pub mod mind {
         }
         pub fn inspect(self: &Self, city: &City) {
             println!(
-                "\n{} {}, {}, age: {},  {}",
+                "\n{} {}, {}, age: {}, born: {},  {}",
                 self.first_name,
                 self.last_name,
                 self.gender,
                 self.age,
+                self.year_of_birth,
                 if self.alive { "Alive" } else { "Dead" }
             );
             println!(
@@ -172,9 +174,26 @@ pub mod mind {
                     .iter()
                     .any(|v| relation_verbs.contains(v));
         }
+        pub fn get_relations(self: &Self, verb: RelationVerb) -> HashSet<Uuid> {
+            let mut output: HashSet<Uuid> = HashSet::new();
+            for (r_id, r_verbs) in &self.relations {
+                if r_verbs.contains(&verb) {
+                    output.insert(r_id.clone());
+                }
+            }
+            return output;
+        }
+        pub fn cleanup(self: &mut Self) {
+            let relation_ref = self.relations.clone();
+            for (id, verbs) in &relation_ref {
+                if verbs.len().eq(&0) {
+                    self.relations.remove(&id);
+                }
+            }
+        }
     }
 
-    pub fn random_mind(dict: &Dictionary, culture: &Culture) -> Mind {
+    pub fn random_mind(dict: &Dictionary, culture: &Culture, year: i32) -> Mind {
         let gender = random_gender();
         let personality = random_personality(&culture);
         let mut dieties: HashSet<Uuid> = HashSet::new();
@@ -219,6 +238,7 @@ pub mod mind {
             personality,
             dieties,
             employer: None,
+            year_of_birth: year - culture.adult_age as i32 + (age_offset as i32),
         };
     }
 
@@ -253,7 +273,7 @@ pub mod mind {
         use procgen_templater::dictionary::dictionary::build_dictionary_from_folder;
         let dict = build_dictionary_from_folder("./data_files");
         let city = random_city(&dict, Era::Medieval, 1);
-        let m = random_mind(&dict, &city.culture);
+        let m = random_mind(&dict, &city.culture, 0);
         m.inspect(&city);
     }
 }
