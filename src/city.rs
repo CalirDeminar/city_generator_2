@@ -4,15 +4,15 @@ pub mod dieties;
 pub mod institutions;
 pub mod population;
 pub mod city {
-    use std::{collections::HashMap, fmt};
+    use std::{
+        collections::{HashMap, HashSet},
+        fmt,
+    };
 
     use procgen_templater::dictionary::dictionary::Dictionary;
     use uuid::Uuid;
 
-    use crate::city::{
-        institutions,
-        population::mind::{mind::Mind, relations::relations::RelationVerb},
-    };
+    use crate::city::population::mind::{mind::Mind, relations::relations::RelationVerb};
 
     use super::{
         area::area::{Area, AreaId},
@@ -64,9 +64,52 @@ pub mod city {
             self.cleanup(5);
         }
         fn increment_citizen_ages(self: &mut Self) {
-            for citizen in self.population.values_mut() {
+            let ref_citizens = self.population.clone();
+            for citizen in ref_citizens.values() {
                 if citizen.alive {
-                    citizen.age();
+                    let citizen_mut = self.population.get_mut(&citizen.id).unwrap();
+                    citizen_mut.age();
+                    if !citizen.alive {
+                        let spare: HashSet<Uuid> = HashSet::new();
+
+                        let partners = citizen
+                            .relations
+                            .get(&RelationVerb::Partner)
+                            .unwrap_or(&spare);
+                        for partner in partners {
+                            let m = self.population.get_mut(partner).unwrap();
+                            m.relations
+                                .get_mut(&RelationVerb::Partner)
+                                .unwrap()
+                                .remove(partner);
+                            if !m.relations.contains_key(&RelationVerb::LatePartner) {
+                                m.relations
+                                    .insert(RelationVerb::LatePartner, HashSet::new());
+                            }
+                            m.relations
+                                .get_mut(&RelationVerb::LatePartner)
+                                .unwrap()
+                                .insert(citizen.id.clone());
+                        }
+                        let spouses = citizen
+                            .relations
+                            .get(&RelationVerb::Spouse)
+                            .unwrap_or(&spare);
+                        for spouse in spouses {
+                            let m = self.population.get_mut(spouse).unwrap();
+                            m.relations
+                                .get_mut(&RelationVerb::Spouse)
+                                .unwrap()
+                                .remove(spouse);
+                            if !m.relations.contains_key(&RelationVerb::LateSpouse) {
+                                m.relations.insert(RelationVerb::LateSpouse, HashSet::new());
+                            }
+                            m.relations
+                                .get_mut(&RelationVerb::LateSpouse)
+                                .unwrap()
+                                .insert(citizen.id.clone());
+                        }
+                    }
                 }
             }
         }
@@ -98,17 +141,46 @@ pub mod city {
                 living_citizens.len(),
                 (single_citizens.len() as f32 / living_citizens.len() as f32) * 100.0
             );
-            let friendless_citizens: Vec<&&Mind> = living_citizens
+        }
+        pub fn population_graph(self: &Self) {
+            let bucket_size: usize = 10;
+            let age_buckets: Vec<u32> = (0..=100).step_by(bucket_size).collect();
+            let population = self.current_citizens();
+            let graph: Vec<(u32, u32)> = age_buckets
                 .iter()
-                .filter(|m| {
-                    m.age > self.culture.adult_age
-                        && ((!m.relations.contains_key(&RelationVerb::Friend)
-                            || m.relations.get(&RelationVerb::Friend).unwrap().len() < 1)
-                            && (!m.relations.contains_key(&RelationVerb::CloseFriend)
-                                || m.relations.get(&RelationVerb::CloseFriend).unwrap().len() < 1))
+                .map(|target_age| {
+                    (
+                        target_age.clone(),
+                        population
+                            .iter()
+                            .filter(|id| {
+                                let m = self.population.get(id).unwrap();
+                                return m.age >= *target_age
+                                    && m.age < target_age + bucket_size as u32;
+                            })
+                            .count() as u32,
+                    )
                 })
                 .collect();
-            println!("Friendless Citizens :{}", friendless_citizens.len());
+            let axis_line = graph.iter().fold(String::new(), |acc, (i, _)| {
+                format!("{}{}{}", acc, "    ", i)
+            });
+            let data_line = graph.iter().fold(String::new(), |acc, (_, i)| {
+                format!(
+                    "{}{}{}",
+                    acc,
+                    if i > &99 {
+                        "   "
+                    } else if i > &9 {
+                        "    "
+                    } else {
+                        "     "
+                    },
+                    i
+                )
+            });
+            println!("{}", data_line);
+            println!(" {}", axis_line);
         }
         pub fn cleanup(self: &mut Self, interval: usize) {
             let rem = self.year.checked_rem(interval);

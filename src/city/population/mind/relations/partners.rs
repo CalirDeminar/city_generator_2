@@ -12,7 +12,7 @@ pub mod partners {
         },
     };
 
-    const PARTNER_CHANCE_GENERAL: f32 = 0.33; // multiple annual chances
+    // const PARTNER_CHANCE_GENERAL: f32 = 0.33; // multiple annual chances
     const PARTNER_MARRIAGE_RATE: f32 = 0.075; // single anunal chance
     const PARTNER_SPLIT_RATE: f32 = 0.06; // single annual chance
     const MARRIAGE_SPLIT_RATE: f32 = 0.03; // single annual chance
@@ -25,11 +25,9 @@ pub mod partners {
             start = Instant::now();
             temp_partner_evolution(self);
             let partner_evolution_duration = start.elapsed().as_millis();
-            let total = find_partner_duration + partner_evolution_duration;
             println!(
-                "Partner Relations Durations: Find: {}% - Evolution: {}%",
-                find_partner_duration as f32 / total as f32 * 100.0,
-                partner_evolution_duration as f32 / total as f32 * 100.0
+                "Partner Relations Durations: Find: {}ms - Evolution: {}ms",
+                find_partner_duration, partner_evolution_duration
             );
         }
     }
@@ -70,7 +68,7 @@ pub mod partners {
 
     pub fn temp_find_partners<'a>(city: &'a mut City) -> &'a mut City {
         let culture = city.culture.clone();
-        let mut rng = rand::thread_rng();
+        // let mut rng = rand::thread_rng();
         let citizen_ids = city.current_citizens();
         let mut reference_citizens = city.population.clone();
 
@@ -78,9 +76,8 @@ pub mod partners {
             let population = &mut city.population;
             let mind = population.get(id).unwrap().clone();
 
-            if mind.is_single()
-                && mind.age > city.culture.adult_age
-                && rng.gen::<f32>() < PARTNER_CHANCE_GENERAL
+            if mind.is_single() && mind.age > city.culture.adult_age
+            // && rng.gen::<f32>() < PARTNER_CHANCE_GENERAL
             {
                 let mut single_friend_ids: Vec<&Uuid> = mind
                     .relations
@@ -165,26 +162,6 @@ pub mod partners {
                         .insert(id.clone());
 
                     reference_citizens = city.population.clone();
-                } else {
-                    if city.year > 100 {
-                        let friend_count = mind
-                            .relations
-                            .get(&RelationVerb::Friend)
-                            .or(Some(&HashSet::new()))
-                            .unwrap()
-                            .len()
-                            + mind
-                                .relations
-                                .get(&RelationVerb::CloseFriend)
-                                .or(Some(&HashSet::new()))
-                                .unwrap()
-                                .len();
-                        println!(
-                            "No partner found in friends from {} single friends of {} friends",
-                            single_friend_ids.len(),
-                            friend_count
-                        );
-                    }
                 }
             }
         }
@@ -200,11 +177,9 @@ pub mod partners {
         let mut processed: HashSet<Uuid> = HashSet::new();
         for id in citizen_ids {
             let mind = reference_citizens.get(&id).unwrap();
-            if !mind.is_single() && !processed.contains(&id) {
+            if !processed.contains(&id) && !mind.is_single() {
                 processed.insert(id.clone());
-                // let possible_partner = mind.relations.iter().find(|(_, verbs)| {
-                //     verbs.contains(&RelationVerb::Partner) || verbs.contains(&RelationVerb::Spouse)
-                // });
+
                 let possible_p = mind.relations.get(&RelationVerb::Partner);
                 let possible_s = mind.relations.get(&RelationVerb::Spouse);
                 let possible_ps = possible_p.or(possible_s);
@@ -279,29 +254,22 @@ pub mod partners {
                                 } else {
                                     (None, None)
                                 };
-                            // mind_mut
-                            //     .relations
-                            //     .get_mut(partner_id)
-                            //     .unwrap()
-                            //     .retain(|v| !v.eq(&verb));
+
                             if !mind_mut.relations.contains_key(&verb) {
                                 mind_mut.relations.insert(verb.clone(), HashSet::new());
                             }
+
                             mind_mut
                                 .relations
                                 .get_mut(&verb)
                                 .unwrap()
                                 .retain(|rid| !rid.eq(&partner_id));
-                            // mind_mut
-                            //     .relations
-                            //     .get_mut(partner_id)
-                            //     .unwrap()
-                            //     .insert(new_verb.clone().unwrap());
                             mind_mut
                                 .relations
                                 .get_mut(&verb)
                                 .unwrap()
                                 .insert((*partner_id).clone());
+
                             if new_verb.eq(&Some(RelationVerb::Spouse)) {
                                 mind_mut.last_name = new_mind_last_name.unwrap();
                             } else if new_verb.eq(&Some(RelationVerb::ExSpouse)) {

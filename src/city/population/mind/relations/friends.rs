@@ -189,9 +189,9 @@ pub mod friends {
                 let to_add =
                     ((rng.gen::<f32>() * 20.0) as i32 - friend_count as i32).max(0) as usize;
 
-                let max_gap = if friend_count < 2 {
+                let max_gap = if friend_count < 2 && (mind_clone.age > city.culture.adult_age + 6) {
                     15
-                } else if friend_count < 5 {
+                } else if friend_count < 5 && (mind_clone.age > city.culture.adult_age + 3) {
                     10
                 } else {
                     5

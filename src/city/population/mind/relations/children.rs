@@ -15,8 +15,8 @@ pub mod children {
     };
 
     const CHILD_MAX: usize = 5;
-    const PARTNER_CHILD_ANNUAL_CHANCE: f32 = 0.075;
-    const SPOUSE_CHILD_ANNUAL_CHANCE: f32 = 0.15;
+    const PARTNER_CHILD_ANNUAL_CHANCE: f32 = 0.1;
+    const SPOUSE_CHILD_ANNUAL_CHANCE: f32 = 0.2;
 
     impl City {
         pub fn generate_children(self: &mut Self, dict: &Dictionary) {

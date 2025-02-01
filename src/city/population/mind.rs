@@ -87,7 +87,7 @@ pub mod mind {
             if self.alive {
                 self.age += 1;
                 let death_threashhold =
-                    ((self.age as f32 - 30.0) / 30.0).max(0.01).powf(2.25) * 0.1;
+                    ((self.age as f32 - 30.0) / 30.0).max(0.01).powf(2.25) * 0.12;
                 // println!("Death Threshhold {}: {:.2}", self.age, death_threashhold);
                 let mut rng = rand::thread_rng();
                 if rng.gen::<f32>() < death_threashhold {
@@ -143,14 +143,21 @@ pub mod mind {
                         "       {} {}: {} {}",
                         r.first_name,
                         r.last_name,
-                        if r.alive { "" } else { "Late" },
+                        if r.alive
+                            && !(verb.eq(&RelationVerb::LatePartner)
+                                || verb.eq(&RelationVerb::LateSpouse))
+                        {
+                            ""
+                        } else {
+                            "Late"
+                        },
                         verb
                     );
                 }
             }
         }
         pub fn is_single(self: &Self) -> bool {
-            return (self.sexuality.eq(&Sexuality::Asexual)
+            return self.sexuality.eq(&Sexuality::Asexual)
                 || ((!self.relations.contains_key(&RelationVerb::Spouse)
                     || self
                         .relations
@@ -164,7 +171,7 @@ pub mod mind {
                             .get(&RelationVerb::Partner)
                             .unwrap()
                             .len()
-                            .eq(&0))));
+                            .eq(&0)));
         }
         pub fn is_relation_of(self: &Self, other: &Uuid) -> bool {
             let relation_verbs = vec![
