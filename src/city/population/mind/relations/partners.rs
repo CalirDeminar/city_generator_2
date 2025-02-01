@@ -85,12 +85,19 @@ pub mod partners {
                 let mut single_friend_ids: Vec<&Uuid> = mind
                     .relations
                     .iter()
-                    .filter(|(r_id, verbs)| {
-                        return (verbs.contains(&RelationVerb::CloseFriend)
-                            || verbs.contains(&RelationVerb::Friend))
-                            && reference_citizens.get(&r_id).unwrap().is_single();
+                    .map(|(verb, ids)| {
+                        return if verb.eq(&&RelationVerb::Friend)
+                            || verb.eq(&&RelationVerb::CloseFriend)
+                            || verb.eq(&&RelationVerb::Acquaintance)
+                        {
+                            ids.iter()
+                                .filter(|id| population.get(id).unwrap().is_single())
+                                .collect()
+                        } else {
+                            Vec::new()
+                        };
                     })
-                    .map(|(id, _)| id)
+                    .flatten()
                     .collect();
                 single_friend_ids.shuffle(&mut rand::thread_rng());
                 let possible_target = single_friend_ids.iter().find(|f_id| {
@@ -101,26 +108,83 @@ pub mod partners {
                     let target_id = possible_target.unwrap();
 
                     let mind_mut = population.get_mut(&id).unwrap();
-                    mind_mut.relations.get_mut(&target_id).unwrap().retain(|v| {
-                        !(v.eq(&RelationVerb::CloseFriend) || v.eq(&RelationVerb::Friend))
-                    });
+                    if mind_mut.relations.contains_key(&RelationVerb::Friend) {
+                        mind_mut
+                            .relations
+                            .get_mut(&RelationVerb::Friend)
+                            .unwrap()
+                            .retain(|r_id| !r_id.eq(&target_id));
+                    }
+                    if mind_mut.relations.contains_key(&RelationVerb::CloseFriend) {
+                        mind_mut
+                            .relations
+                            .get_mut(&RelationVerb::CloseFriend)
+                            .unwrap()
+                            .retain(|r_id| !r_id.eq(&target_id));
+                    }
+
+                    if !mind_mut.relations.contains_key(&RelationVerb::Partner) {
+                        mind_mut
+                            .relations
+                            .insert(RelationVerb::Partner, HashSet::new());
+                    }
                     mind_mut
                         .relations
-                        .get_mut(&target_id)
+                        .get_mut(&RelationVerb::Partner)
                         .unwrap()
-                        .insert(RelationVerb::Partner);
+                        .insert((*target_id).clone());
 
                     let target_mut = population.get_mut(&target_id).unwrap();
-                    target_mut.relations.get_mut(&id).unwrap().retain(|v| {
-                        !(v.eq(&RelationVerb::CloseFriend) || v.eq(&RelationVerb::Friend))
-                    });
+                    if target_mut.relations.contains_key(&RelationVerb::Friend) {
+                        target_mut
+                            .relations
+                            .get_mut(&RelationVerb::Friend)
+                            .unwrap()
+                            .retain(|r_id| !r_id.eq(&id));
+                    }
+                    if target_mut
+                        .relations
+                        .contains_key(&RelationVerb::CloseFriend)
+                    {
+                        target_mut
+                            .relations
+                            .get_mut(&RelationVerb::CloseFriend)
+                            .unwrap()
+                            .retain(|r_id| !r_id.eq(&id));
+                    }
+
+                    if !target_mut.relations.contains_key(&RelationVerb::Partner) {
+                        target_mut
+                            .relations
+                            .insert(RelationVerb::Partner, HashSet::new());
+                    }
                     target_mut
                         .relations
-                        .get_mut(&id)
+                        .get_mut(&RelationVerb::Partner)
                         .unwrap()
-                        .insert(RelationVerb::Partner);
+                        .insert(id.clone());
 
                     reference_citizens = city.population.clone();
+                } else {
+                    if city.year > 100 {
+                        let friend_count = mind
+                            .relations
+                            .get(&RelationVerb::Friend)
+                            .or(Some(&HashSet::new()))
+                            .unwrap()
+                            .len()
+                            + mind
+                                .relations
+                                .get(&RelationVerb::CloseFriend)
+                                .or(Some(&HashSet::new()))
+                                .unwrap()
+                                .len();
+                        println!(
+                            "No partner found in friends from {} single friends of {} friends",
+                            single_friend_ids.len(),
+                            friend_count
+                        );
+                    }
                 }
             }
         }
@@ -138,20 +202,37 @@ pub mod partners {
             let mind = reference_citizens.get(&id).unwrap();
             if !mind.is_single() && !processed.contains(&id) {
                 processed.insert(id.clone());
-                let possible_partner = mind.relations.iter().find(|(_, verbs)| {
-                    verbs.contains(&RelationVerb::Partner) || verbs.contains(&RelationVerb::Spouse)
-                });
+                // let possible_partner = mind.relations.iter().find(|(_, verbs)| {
+                //     verbs.contains(&RelationVerb::Partner) || verbs.contains(&RelationVerb::Spouse)
+                // });
+                let possible_p = mind.relations.get(&RelationVerb::Partner);
+                let possible_s = mind.relations.get(&RelationVerb::Spouse);
+                let possible_ps = possible_p.or(possible_s);
+
+                let ids: Vec<&Uuid> = possible_ps.unwrap().iter().collect::<Vec<&Uuid>>().clone();
+                let possible_partner: Option<(&&Uuid, &RelationVerb)> = if possible_ps.is_some() {
+                    if ids.len() > 0 {
+                        let first_id = ids.first();
+                        Some((
+                            first_id.unwrap(),
+                            if possible_p.is_some() {
+                                &RelationVerb::Partner
+                            } else {
+                                &RelationVerb::Spouse
+                            },
+                        ))
+                    } else {
+                        None
+                    }
+                } else {
+                    None
+                };
 
                 if possible_partner.is_some() {
-                    let (partner_id, verbs) = possible_partner.unwrap();
+                    let (partner_id, verb) = possible_partner.unwrap();
                     let partner = reference_citizens.get(partner_id).unwrap();
                     if partner.alive {
-                        processed.insert(partner_id.clone());
-                        let verb = if verbs.contains(&RelationVerb::Spouse) {
-                            RelationVerb::Spouse
-                        } else {
-                            RelationVerb::Partner
-                        };
+                        processed.insert((*partner_id).clone());
                         let split_chance = if verb.eq(&RelationVerb::Spouse) {
                             MARRIAGE_SPLIT_RATE
                         } else {
@@ -198,33 +279,56 @@ pub mod partners {
                                 } else {
                                     (None, None)
                                 };
+                            // mind_mut
+                            //     .relations
+                            //     .get_mut(partner_id)
+                            //     .unwrap()
+                            //     .retain(|v| !v.eq(&verb));
+                            if !mind_mut.relations.contains_key(&verb) {
+                                mind_mut.relations.insert(verb.clone(), HashSet::new());
+                            }
                             mind_mut
                                 .relations
-                                .get_mut(partner_id)
+                                .get_mut(&verb)
                                 .unwrap()
-                                .retain(|v| !v.eq(&verb));
+                                .retain(|rid| !rid.eq(&partner_id));
+                            // mind_mut
+                            //     .relations
+                            //     .get_mut(partner_id)
+                            //     .unwrap()
+                            //     .insert(new_verb.clone().unwrap());
                             mind_mut
                                 .relations
-                                .get_mut(partner_id)
+                                .get_mut(&verb)
                                 .unwrap()
-                                .insert(new_verb.clone().unwrap());
+                                .insert((*partner_id).clone());
                             if new_verb.eq(&Some(RelationVerb::Spouse)) {
                                 mind_mut.last_name = new_mind_last_name.unwrap();
                             } else if new_verb.eq(&Some(RelationVerb::ExSpouse)) {
                                 mind_mut.last_name = mind_mut.origional_last_name.clone();
                             }
                             let partner_mut = city.population.get_mut(&partner_id).unwrap();
-
+                            if !partner_mut.relations.contains_key(&verb) {
+                                partner_mut.relations.insert(verb.clone(), HashSet::new());
+                            }
                             partner_mut
                                 .relations
-                                .get_mut(&id)
+                                .get_mut(&verb)
                                 .unwrap()
-                                .retain(|v| !v.eq(&verb));
-                            partner_mut
-                                .relations
-                                .get_mut(&id)
-                                .unwrap()
-                                .insert(new_verb.clone().unwrap());
+                                .retain(|rid| !rid.eq(&id));
+                            if new_verb.is_some() {
+                                let new_verb_unwrapped = new_verb.clone().unwrap();
+                                if !partner_mut.relations.contains_key(&new_verb_unwrapped) {
+                                    partner_mut
+                                        .relations
+                                        .insert(new_verb_unwrapped.clone(), HashSet::new());
+                                }
+                                partner_mut
+                                    .relations
+                                    .get_mut(&new_verb_unwrapped)
+                                    .unwrap()
+                                    .insert(id.clone());
+                            }
                             if new_verb.eq(&Some(RelationVerb::Spouse)) {
                                 partner_mut.last_name = new_partner_last_name.unwrap();
                             } else if new_verb.eq(&Some(RelationVerb::ExSpouse)) {

@@ -81,14 +81,16 @@ pub mod relations {
                 for sibling_id in siblings {
                     if !sibling_id.eq(&target_id) {
                         let sibling = self.population.get_mut(&sibling_id).unwrap();
-                        if !sibling.relations.contains_key(target_id) {
-                            sibling.relations.insert(target_id.clone(), HashSet::new());
+                        if !sibling.relations.contains_key(&RelationVerb::Sibling) {
+                            sibling
+                                .relations
+                                .insert(RelationVerb::Sibling, HashSet::new());
                         }
                         sibling
                             .relations
-                            .get_mut(target_id)
+                            .get_mut(&RelationVerb::Sibling)
                             .unwrap()
-                            .insert(RelationVerb::Sibling);
+                            .insert(target_id.clone());
                         relations_to_add.insert((sibling_id.clone(), RelationVerb::Sibling));
                     }
                 }
@@ -96,53 +98,60 @@ pub mod relations {
                 let grandparents = parent.get_relations(RelationVerb::Parent);
                 for grandparent_id in grandparents {
                     let grandparent = self.population.get_mut(&grandparent_id).unwrap();
-                    if !grandparent.relations.contains_key(target_id) {
+                    if !grandparent
+                        .relations
+                        .contains_key(&RelationVerb::Grandchild)
+                    {
                         grandparent
                             .relations
-                            .insert(target_id.clone(), HashSet::new());
+                            .insert(RelationVerb::Grandchild, HashSet::new());
                     }
                     grandparent
                         .relations
-                        .get_mut(target_id)
+                        .get_mut(&RelationVerb::Grandchild)
                         .unwrap()
-                        .insert(RelationVerb::Grandchild);
+                        .insert(target_id.clone());
                     relations_to_add.insert((grandparent_id.clone(), RelationVerb::Grandparent));
                 }
                 // Piblings
                 let piblings = parent.get_relations(RelationVerb::Sibling);
                 for pibling_id in piblings {
                     let pibling = self.population.get_mut(&pibling_id).unwrap();
-                    if !pibling.relations.contains_key(target_id) {
-                        pibling.relations.insert(target_id.clone(), HashSet::new());
+                    if !pibling.relations.contains_key(&RelationVerb::Nibling) {
+                        pibling
+                            .relations
+                            .insert(RelationVerb::Nibling, HashSet::new());
                     }
                     pibling
                         .relations
-                        .get_mut(target_id)
+                        .get_mut(&RelationVerb::Nibling)
                         .unwrap()
-                        .insert(RelationVerb::Nibling);
+                        .insert(target_id.clone());
                     relations_to_add.insert((pibling_id.clone(), RelationVerb::Pibling));
                 }
                 // Cousins
                 let cousins = parent.get_relations(RelationVerb::Nibling);
                 for cousin_id in cousins {
                     let cousin = self.population.get_mut(&cousin_id).unwrap();
-                    if !cousin.relations.contains_key(target_id) {
-                        cousin.relations.insert(target_id.clone(), HashSet::new());
+                    if !cousin.relations.contains_key(&RelationVerb::Cousin) {
+                        cousin
+                            .relations
+                            .insert(RelationVerb::Cousin, HashSet::new());
                     }
                     cousin
                         .relations
-                        .get_mut(target_id)
+                        .get_mut(&RelationVerb::Cousin)
                         .unwrap()
-                        .insert(RelationVerb::Cousin);
+                        .insert(target_id.clone());
                     relations_to_add.insert((cousin_id.clone(), RelationVerb::Cousin));
                 }
             }
             let target_mut = self.population.get_mut(target_id).unwrap();
             for (r_id, verb) in relations_to_add {
-                if !target_mut.relations.contains_key(&r_id) {
-                    target_mut.relations.insert(r_id.clone(), HashSet::new());
+                if !target_mut.relations.contains_key(&verb) {
+                    target_mut.relations.insert(verb.clone(), HashSet::new());
                 }
-                target_mut.relations.get_mut(&r_id).unwrap().insert(verb);
+                target_mut.relations.get_mut(&verb).unwrap().insert(r_id);
             }
         }
     }

@@ -9,7 +9,10 @@ pub mod city {
     use procgen_templater::dictionary::dictionary::Dictionary;
     use uuid::Uuid;
 
-    use crate::city::{institutions, population::mind::mind::Mind};
+    use crate::city::{
+        institutions,
+        population::mind::{mind::Mind, relations::relations::RelationVerb},
+    };
 
     use super::{
         area::area::{Area, AreaId},
@@ -93,8 +96,19 @@ pub mod city {
                 "Single Citizens: {}/{} - {:.2}%",
                 single_citizens.len(),
                 living_citizens.len(),
-                1.0 - (single_citizens.len() as f32 / living_citizens.len() as f32)
+                (single_citizens.len() as f32 / living_citizens.len() as f32) * 100.0
             );
+            let friendless_citizens: Vec<&&Mind> = living_citizens
+                .iter()
+                .filter(|m| {
+                    m.age > self.culture.adult_age
+                        && ((!m.relations.contains_key(&RelationVerb::Friend)
+                            || m.relations.get(&RelationVerb::Friend).unwrap().len() < 1)
+                            && (!m.relations.contains_key(&RelationVerb::CloseFriend)
+                                || m.relations.get(&RelationVerb::CloseFriend).unwrap().len() < 1))
+                })
+                .collect();
+            println!("Friendless Citizens :{}", friendless_citizens.len());
         }
         pub fn cleanup(self: &mut Self, interval: usize) {
             let rem = self.year.checked_rem(interval);

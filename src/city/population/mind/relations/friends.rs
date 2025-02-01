@@ -43,23 +43,47 @@ pub mod friends {
     }
 
     fn filter_to_social_relations(
-        r: &HashMap<Uuid, HashSet<RelationVerb>>,
+        r: &HashMap<RelationVerb, HashSet<Uuid>>,
     ) -> HashMap<Uuid, HashSet<RelationVerb>> {
-        return r
-            .iter()
-            .filter(|(_id, verb_set)| verb_set.iter().any(|v| SOCIAL_RELATIONS.contains(&v)))
-            .map(|(i, j)| (i.clone(), j.clone()))
-            .collect();
+        // return r
+        //     .iter()
+        //     .filter(|(_id, verb_set)| verb_set.iter().any(|v| SOCIAL_RELATIONS.contains(&v)))
+        //     .map(|(i, j)| (i.clone(), j.clone()))
+        //     .collect();
+        let mut output: HashMap<Uuid, HashSet<RelationVerb>> = HashMap::new();
+        for (verb, ids) in r {
+            if SOCIAL_RELATIONS.contains(verb) {
+                for id in ids {
+                    if !output.contains_key(id) {
+                        output.insert(id.clone(), HashSet::new());
+                    }
+                    output.get_mut(id).unwrap().insert(verb.clone());
+                }
+            }
+        }
+        return output;
     }
 
     fn filter_to_friend_exclusion_list(
-        r: &HashMap<Uuid, HashSet<RelationVerb>>,
+        r: &HashMap<RelationVerb, HashSet<Uuid>>,
     ) -> HashMap<Uuid, HashSet<RelationVerb>> {
-        return r
-            .iter()
-            .filter(|(_id, verb_set)| verb_set.iter().any(|v| FRIEND_EXCLUSIONS.contains(&v)))
-            .map(|(i, j)| (i.clone(), j.clone()))
-            .collect();
+        // return r
+        //     .iter()
+        //     .filter(|(_id, verb_set)| verb_set.iter().any(|v| FRIEND_EXCLUSIONS.contains(&v)))
+        //     .map(|(i, j)| (i.clone(), j.clone()))
+        //     .collect();
+        let mut output: HashMap<Uuid, HashSet<RelationVerb>> = HashMap::new();
+        for (verb, ids) in r {
+            if FRIEND_EXCLUSIONS.contains(verb) {
+                for id in ids {
+                    if !output.contains_key(id) {
+                        output.insert(id.clone(), HashSet::new());
+                    }
+                    output.get_mut(id).unwrap().insert(verb.clone());
+                }
+            }
+        }
+        return output;
     }
 
     fn temp_generate_eligible_friend_list(
@@ -86,56 +110,60 @@ pub mod friends {
     fn temp_friend_evolution<'a>(city: &'a mut City, mind_id: &MindId) -> &'a mut City {
         let mut rng = rand::thread_rng();
         let mind_ref = city.population.get(mind_id).unwrap().clone();
-        for (target_id, verbs) in &mind_ref.relations {
-            let mut to_remove: Option<RelationVerb> = None;
-            let mut to_add: Option<RelationVerb> = None;
-            if verbs.contains(&RelationVerb::Acquaintance) {
-                if rng.gen::<f32>() < 0.6 {
-                    to_remove = Some(RelationVerb::Acquaintance);
-                } else if rng.gen::<f32>() < 0.25 {
-                    to_remove = Some(RelationVerb::Acquaintance);
-                    to_add = Some(RelationVerb::Friend);
-                }
-            } else if verbs.contains(&RelationVerb::Friend) {
-                if rng.gen::<f32>() < 0.25 {
-                    to_remove = Some(RelationVerb::Friend);
-                    to_add = Some(RelationVerb::Acquaintance);
-                } else if rng.gen::<f32>() < 0.125 {
-                    to_remove = Some(RelationVerb::Friend);
-                    to_add = Some(RelationVerb::CloseFriend);
-                }
-            } else if verbs.contains(&RelationVerb::CloseFriend) {
-                if rng.gen::<f32>() < 0.125 {
-                    to_remove = Some(RelationVerb::CloseFriend);
-                    to_add = Some(RelationVerb::Friend);
-                }
-            }
+        for (verb, target_ids) in &mind_ref.relations {
+            for target_id in target_ids {
+                let mut to_remove: Option<RelationVerb> = None;
+                let mut to_add: Option<RelationVerb> = None;
 
-            if to_remove.is_some() {
-                let remove = to_remove.unwrap();
-                let m = city.population.get_mut(mind_id).unwrap();
-                m.relations
-                    .get_mut(target_id)
-                    .unwrap()
-                    .retain(|v| !v.eq(&remove));
-                let t = city.population.get_mut(target_id).unwrap();
-                t.relations
-                    .get_mut(mind_id)
-                    .unwrap()
-                    .retain(|v| !v.eq(&remove));
-            }
-            if to_add.is_some() {
-                let add = to_add.unwrap();
-                let m = city.population.get_mut(mind_id).unwrap();
-                if !m.relations.contains_key(target_id) {
-                    m.relations.insert(target_id.clone(), HashSet::new());
+                if verb.eq(&RelationVerb::Acquaintance) {
+                    if rng.gen::<f32>() < 0.6 {
+                        to_remove = Some(RelationVerb::Acquaintance);
+                    } else if rng.gen::<f32>() < 0.25 {
+                        to_remove = Some(RelationVerb::Acquaintance);
+                        to_add = Some(RelationVerb::Friend);
+                    }
+                } else if verb.eq(&RelationVerb::Friend) {
+                    if rng.gen::<f32>() < 0.25 {
+                        to_remove = Some(RelationVerb::Friend);
+                        to_add = Some(RelationVerb::Acquaintance);
+                    } else if rng.gen::<f32>() < 0.125 {
+                        to_remove = Some(RelationVerb::Friend);
+                        to_add = Some(RelationVerb::CloseFriend);
+                    }
+                } else if verb.eq(&RelationVerb::CloseFriend) {
+                    if rng.gen::<f32>() < 0.125 {
+                        to_remove = Some(RelationVerb::CloseFriend);
+                        to_add = Some(RelationVerb::Friend);
+                    }
                 }
-                m.relations.get_mut(target_id).unwrap().insert(add.clone());
-                let t = city.population.get_mut(target_id).unwrap();
-                if !t.relations.contains_key(mind_id) {
-                    t.relations.insert(mind_id.clone(), HashSet::new());
+
+                if to_remove.is_some() {
+                    let remove = to_remove.unwrap();
+                    let mind = city.population.get_mut(&mind_ref.id).unwrap();
+                    mind.relations.get_mut(&remove).unwrap().remove(target_id);
+                    let target = city.population.get_mut(target_id).unwrap();
+                    target
+                        .relations
+                        .get_mut(&remove)
+                        .unwrap()
+                        .remove(&mind_ref.id);
                 }
-                t.relations.get_mut(mind_id).unwrap().insert(add.clone());
+                if to_add.is_some() {
+                    let add = to_add.unwrap();
+                    let mind = city.population.get_mut(&mind_ref.id).unwrap();
+                    if !mind.relations.contains_key(&add) {
+                        mind.relations.insert(add.clone(), HashSet::new());
+                    }
+                    mind.relations
+                        .get_mut(&add)
+                        .unwrap()
+                        .insert(target_id.clone());
+                    let target = city.population.get_mut(target_id).unwrap();
+                    if !target.relations.contains_key(&add) {
+                        target.relations.insert(add.clone(), HashSet::new());
+                    }
+                    target.relations.get_mut(&add).unwrap().insert(mind_ref.id);
+                }
             }
         }
         return city;
@@ -161,10 +189,19 @@ pub mod friends {
                 let to_add =
                     ((rng.gen::<f32>() * 20.0) as i32 - friend_count as i32).max(0) as usize;
 
+                let max_gap = if friend_count < 2 {
+                    15
+                } else if friend_count < 5 {
+                    10
+                } else {
+                    5
+                };
+
                 let source_list = temp_generate_eligible_friend_list(
                     &age_cache,
-                    (mind_clone.age as i32 - 5 as i32).max(5) as u32,
-                    mind_clone.age + 5,
+                    (mind_clone.age as i32 - max_gap as i32).max(city.culture.adult_age as i32)
+                        as u32,
+                    mind_clone.age + max_gap,
                     &excluded_relations,
                 );
                 for _i in 0..to_add {
@@ -174,28 +211,34 @@ pub mod friends {
                         let target_mind_id = possible_target_mind_id.unwrap();
                         if !mind_clone.is_relation_of(target_mind_id) {
                             let source_mind_mut = city.population.get_mut(&m_id).unwrap();
-                            if !source_mind_mut.relations.contains_key(&target_mind_id) {
+                            if !source_mind_mut
+                                .relations
+                                .contains_key(&RelationVerb::Acquaintance)
+                            {
                                 source_mind_mut
                                     .relations
-                                    .insert(target_mind_id.clone(), HashSet::new());
+                                    .insert(RelationVerb::Acquaintance, HashSet::new());
                             }
                             source_mind_mut
                                 .relations
-                                .get_mut(&target_mind_id)
+                                .get_mut(&RelationVerb::Acquaintance)
                                 .unwrap()
-                                .insert(RelationVerb::Acquaintance);
+                                .insert(target_mind_id.clone());
 
                             let target_mind_mut = city.population.get_mut(&target_mind_id).unwrap();
-                            if !target_mind_mut.relations.contains_key(&m_id) {
+                            if !target_mind_mut
+                                .relations
+                                .contains_key(&RelationVerb::Acquaintance)
+                            {
                                 target_mind_mut
                                     .relations
-                                    .insert(m_id.clone(), HashSet::new());
+                                    .insert(RelationVerb::Acquaintance, HashSet::new());
                             }
                             target_mind_mut
                                 .relations
-                                .get_mut(&m_id)
+                                .get_mut(&RelationVerb::Acquaintance)
                                 .unwrap()
-                                .insert(RelationVerb::Acquaintance);
+                                .insert(m_id.clone());
                         }
                     }
                 }

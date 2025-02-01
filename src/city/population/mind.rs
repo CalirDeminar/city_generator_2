@@ -74,7 +74,7 @@ pub mod mind {
         pub age: u32,
         pub gender: Gender,
         pub sexuality: Sexuality,
-        pub relations: HashMap<MindId, HashSet<RelationVerb>>,
+        pub relations: HashMap<RelationVerb, HashSet<Uuid>>,
         pub description: PhysicalDescription,
         pub personality: Personality,
         pub dieties: HashSet<Uuid>,
@@ -136,25 +136,35 @@ pub mod mind {
                 );
             }
             println!("  Relations: ");
-            for (r_id, verbs) in &self.relations {
-                let r = city.population.get(&r_id).unwrap();
-                let verbs: Vec<String> = verbs.iter().map(|v| format!("{}", v)).collect();
-                if verbs.len() > 0 {
+            for (verb, rel_ids) in &self.relations {
+                for r_id in rel_ids {
+                    let r = city.population.get(&r_id).unwrap();
                     println!(
                         "       {} {}: {} {}",
                         r.first_name,
                         r.last_name,
                         if r.alive { "" } else { "Late" },
-                        render_list(verbs.iter().map(|v| v.as_str()).collect())
+                        verb
                     );
                 }
             }
         }
         pub fn is_single(self: &Self) -> bool {
-            return !(self.sexuality.eq(&Sexuality::Asexual)
-                || self.relations.iter().any(|(_, verbs)| {
-                    verbs.contains(&RelationVerb::Spouse) || verbs.contains(&RelationVerb::Partner)
-                }));
+            return (self.sexuality.eq(&Sexuality::Asexual)
+                || ((!self.relations.contains_key(&RelationVerb::Spouse)
+                    || self
+                        .relations
+                        .get(&RelationVerb::Spouse)
+                        .unwrap()
+                        .len()
+                        .eq(&0))
+                    && (!self.relations.contains_key(&RelationVerb::Partner)
+                        || self
+                            .relations
+                            .get(&RelationVerb::Partner)
+                            .unwrap()
+                            .len()
+                            .eq(&0))));
         }
         pub fn is_relation_of(self: &Self, other: &Uuid) -> bool {
             let relation_verbs = vec![
@@ -166,22 +176,24 @@ pub mod mind {
                 RelationVerb::Nibling,
                 RelationVerb::Cousin,
             ];
-            return self.relations.contains_key(other)
-                && self
-                    .relations
-                    .get(other)
-                    .unwrap()
-                    .iter()
-                    .any(|v| relation_verbs.contains(v));
-        }
-        pub fn get_relations(self: &Self, verb: RelationVerb) -> HashSet<Uuid> {
-            let mut output: HashSet<Uuid> = HashSet::new();
-            for (r_id, r_verbs) in &self.relations {
-                if r_verbs.contains(&verb) {
-                    output.insert(r_id.clone());
+            for v in relation_verbs {
+                let possible_ids = self.relations.get(&v);
+                if possible_ids.is_some() {
+                    let ids = possible_ids.unwrap();
+                    if ids.contains(other) {
+                        return true;
+                    }
                 }
             }
-            return output;
+            return false;
+        }
+        pub fn get_relations(self: &Self, verb: RelationVerb) -> HashSet<Uuid> {
+            let rel = self.relations.get(&verb);
+            if rel.is_none() {
+                return HashSet::new();
+            } else {
+                return rel.unwrap().clone();
+            }
         }
         pub fn cleanup(self: &mut Self) {
             let relation_ref = self.relations.clone();
