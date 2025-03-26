@@ -20,8 +20,8 @@ TEMPLATE(The ADJECTIVE[[Negative][Impersonal][ObjectState]] NOUN[[Container]]), 
 // Chapel
 TEMPLATE(The House of Concept), TAG(Altar), TAG(Altar), TAG(EraAll), TAG(InstitutionName)
 TEMPLATE(The House of Diety), TAG(Altar), TAG(Altar), TAG(EraAll), TAG(InstitutionName)
-TEMPLATE(The [[AreaFeature, LocalFeature][Geography]] of CONCEPT), TAG(Altar), TAG(EraAll), TAG(InstitutionName)
-TEMPLATE(The [[AreaFeature, LocalFeature][Geography]] of DIETY), TAG(Altar), TAG(EraAll), TAG(InstitutionName)
+TEMPLATE(The NOUN[[AreaFeature, LocalFeature][Geography]] of CONCEPT), TAG(Altar), TAG(EraAll), TAG(InstitutionName)
+TEMPLATE(The NOUN[[AreaFeature, LocalFeature][Geography]] of DIETY), TAG(Altar), TAG(EraAll), TAG(InstitutionName)
 // Cult?
 // ** Resources
 // General Retail
@@ -38,7 +38,10 @@ TEMPLATE(NOUN[[LastName]]'s Florists), TAG(EraModern), TAG(InstitutionName), TAG
 // ** Defence
 // Police Station
 TEMPLATE(Police Station), TAG(PoliceStation), TAG(EraModern), TAG(InstitutionName)
-TEMPLATE(Guard Barracks), TAG(PoliceStation), TAG(EraFantasy), TAG(EraMedieval), TAG(InstitutionName)
+TEMPLATE(NOUN[[LastName]] Security), Tag(PoliceStation), TAG(EraModern), TAG(InstitutionName)
+TEMPLATE(NOUN[[AreaFeature, LocalFeature][Geography]] Barracks), TAG(PoliceStation), TAG(EraFantasy), TAG(EraMedieval), TAG(InstitutionName)
+TEMPLATE(ADJECTIVE[[Location]] Barracks), TAG(PoliceStation), TAG(EraFantasy), TAG(EraMedieval), TAG(InstitutionName)
+TEMPLATE(ADJECTIVE[[Location]] Guard Post), TAG(PoliceStation), TAG(EraFantasy), TAG(EraMedieval), TAG(InstitutionName)
 // ** Social
 // Pubs
 //  Inn Suffix
@@ -58,7 +61,7 @@ TEMPLATE(The ADJECTIVE[[Metal, Colour]] NOUN[[Container, Cutlery, Instrument][Er
 TEMPLATE(The ADJECTIVE[[Quality, Age][Positive, Age][Impersonal]] NOUN[[Mammal][Large]] Tavern), TAG(Pub), TAG(Food) TAG(Social), TAG(EraMedieval), TAG(InstitutionName)
 TEMPLATE(The ADJECTIVE[[Quality, Age][Positive, Age][Impersonal]] NOUN[[Container, Cutlery, Instrument][EraMedieval]] Tavern), TAG(Pub), TAG(Food) TAG(Social), TAG(EraMedieval), TAG(InstitutionName)
 // Hotels
-// Thearters
+// Theatres
 TEMPLATE(The ADJECTIVE[[Quality, Age][Positive, Age][Impersonal]] NOUN[[Mammal][Large]] Theater), TAG(Social), TAG(Theater), TAG(EraAll), TAG(InstitutionName)
 TEMPLATE(The ADJECTIVE[[Quality, Age][Positive, Age][Impersonal]] NOUN[[Mammal][Large]] Music Hall), TAG(Social), TAG(Music), TAG(EraAll), TAG(InstitutionName)
 TEMPLATE(The ADJECTIVE[[Quality, Age][Positive, Age][Impersonal]] NOUN[[Mammal][Large]] Cinema), TAG(Social), TAG(Cinema), TAG(EraModern), TAG(InstitutionName)
