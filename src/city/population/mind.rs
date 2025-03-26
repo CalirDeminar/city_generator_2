@@ -37,6 +37,23 @@ pub mod mind {
         }
     }
 
+    const RELATIONS_ORDER: [RelationVerb; 14] = [
+        RelationVerb::Partner,
+        RelationVerb::Spouse,
+        RelationVerb::LatePartner,
+        RelationVerb::LateSpouse,
+        RelationVerb::Parent,
+        RelationVerb::Grandparent,
+        RelationVerb::Child,
+        RelationVerb::Grandchild,
+        RelationVerb::Pibling,
+        RelationVerb::Nibling,
+        RelationVerb::Cousin,
+        RelationVerb::CloseFriend,
+        RelationVerb::Friend,
+        RelationVerb::Acquaintance,
+    ];
+
     const AMBIGUOUS_GENDER_CHANCE: f32 = 0.1;
 
     #[derive(PartialEq, Debug, Clone, Hash, Eq)]
@@ -95,6 +112,51 @@ pub mod mind {
                 }
             }
         }
+        pub fn print(self: &Self, city: &City) -> String {
+            let mut output = String::new();
+
+            output += &format!("### {} {}  \n", self.first_name, self.last_name);
+            output += &format!("Age: {}  \n", self.age);
+            output += &format!("Born: {}  \n", self.year_of_birth);
+            output += &format!("Status: {}  \n", if self.alive { "Alive" } else { "Dead" });
+            output += &format!("Sexuality: {}  \n", self.sexuality);
+            output += &format!("Appearance: {}  \n", self.description.render(None));
+
+            let traits: Vec<String> = self
+                .personality
+                .traits
+                .iter()
+                .map(|i| i.to_string().to_ascii_lowercase())
+                .collect();
+            output += &format!(
+                "Traits: {}  \n",
+                render_list(traits.iter().map(|t| t.as_str()).collect::<Vec<&str>>())
+            );
+            if self.dieties.len() > 0 {
+                output += "Dieties:  \n";
+
+                for d_id in &self.dieties {
+                    let diety = city.culture.dieties.get(&d_id).unwrap();
+                    output += &format!(" - {}.  \n", diety.render_summary());
+                }
+            }
+
+            if self.relations.len() > 0 {
+                output += "Relations:  \n";
+                // TODO - order this
+                for verb in RELATIONS_ORDER {
+                    if self.relations.contains_key(&verb) {
+                        let ids = self.relations.get(&verb).unwrap();
+                        for id in ids {
+                            let mind = city.population.get(&id).unwrap();
+                            output +=
+                                &format!(" - {}: {} {}  \n", verb, mind.first_name, mind.last_name);
+                        }
+                    }
+                }
+            }
+            return output;
+        }
         pub fn inspect(self: &Self, city: &City) {
             println!(
                 "\n{} {}, {}, age: {}, born: {},  {}",
@@ -136,25 +198,34 @@ pub mod mind {
                 );
             }
             println!("  Relations: ");
-            for (verb, rel_ids) in &self.relations {
-                for r_id in rel_ids {
-                    let r = city.population.get(&r_id).unwrap();
-                    println!(
-                        "       {} {}: {} {}",
-                        r.first_name,
-                        r.last_name,
-                        if r.alive
-                            && !(verb.eq(&RelationVerb::LatePartner)
-                                || verb.eq(&RelationVerb::LateSpouse))
-                        {
-                            ""
-                        } else {
-                            "Late"
-                        },
-                        verb
-                    );
+            for verb in RELATIONS_ORDER {
+                if self.relations.contains_key(&verb) {
+                    let rel_ids = self.relations.get(&verb).unwrap();
+                    for r_id in rel_ids {
+                        let r = city.population.get(&r_id).unwrap();
+                        println!(
+                            "       {} {}: {} {}",
+                            r.first_name,
+                            r.last_name,
+                            if r.alive
+                                && !(verb.eq(&RelationVerb::LatePartner)
+                                    || verb.eq(&RelationVerb::LateSpouse))
+                            {
+                                ""
+                            } else {
+                                "Late"
+                            },
+                            verb
+                        );
+                    }
                 }
             }
+            // for (verb, rel_ids) in &self.relations {
+            //     for r_id in rel_ids {
+            //         let r = city.population.get(&r_id).unwrap();
+
+            //     }
+            // }
         }
         pub fn is_single(self: &Self) -> bool {
             return self.sexuality.eq(&Sexuality::Asexual)

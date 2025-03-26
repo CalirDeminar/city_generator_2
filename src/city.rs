@@ -4,9 +4,13 @@ pub mod dieties;
 pub mod institutions;
 pub mod population;
 pub mod city {
+    use std::io::prelude::*;
     use std::{
         collections::{HashMap, HashSet},
         fmt,
+        fs::File,
+        io::LineWriter,
+        path::Path,
     };
 
     use procgen_templater::dictionary::dictionary::Dictionary;
@@ -182,6 +186,27 @@ pub mod city {
             println!("{}", data_line);
             println!(" {}", axis_line);
         }
+
+        pub fn export(self: &Self) {
+            let mind_file = File::create(Path::new("./export/minds_export.md")).unwrap();
+            let institution_file =
+                File::create(Path::new("./export/institutions_export.md")).unwrap();
+            let mut mind_file_writer = LineWriter::new(mind_file);
+            let mut institution_file_writer = LineWriter::new(institution_file);
+
+            for id in self.current_citizens() {
+                mind_file_writer
+                    .write_all(self.population.get(&id).unwrap().print(&self).as_bytes())
+                    .unwrap();
+            }
+            for id in self.institutions.keys() {
+                institution_file_writer
+                    .write_all(self.institutions.get(&id).unwrap().print(&self).as_bytes())
+                    .unwrap();
+            }
+            mind_file_writer.flush().unwrap();
+            institution_file_writer.flush().unwrap();
+        }
         pub fn cleanup(self: &mut Self, interval: usize) {
             let rem = self.year.checked_rem(interval);
             if rem.is_some() && rem.unwrap().eq(&0) {
@@ -194,6 +219,13 @@ pub mod city {
                             employer.staff.remove(&mind.id);
                         }
                         mind.employer = None;
+                    }
+                }
+                let institutions_clone = self.institutions.clone();
+                let institutions = institutions_clone.values();
+                for inst in institutions {
+                    if inst.staff.len().eq(&0) {
+                        self.institutions.remove(&inst.id);
                     }
                 }
             }

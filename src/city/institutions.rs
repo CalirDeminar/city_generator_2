@@ -168,6 +168,25 @@ pub mod institutions {
                 );
             }
         }
+
+        pub fn print(self: &Self, city: &City) -> String {
+            let mut output = String::new();
+
+            output += &format!("### {}  \n", self.name);
+            output += &format!("Category: {:?}  \n", self.category);
+            output += &format!("Wealth: {}  \n", self.wealth);
+
+            output += &format!("Staff:  \n");
+            for (mind_id, staff_definition) in &self.staff {
+                let mind = city.population.get(&mind_id).unwrap();
+                output += &format!(
+                    "    {}: {} {}  \n",
+                    staff_definition.title, mind.first_name, mind.last_name
+                );
+            }
+
+            return output;
+        }
     }
 
     pub fn random_institution(dict: &Dictionary, city: &City) -> Institution {
@@ -185,6 +204,7 @@ pub mod institutions {
     }
 
     pub fn generate_temple(dict: &Dictionary, culture: &Culture) -> Institution {
+        let mut rand = rand::thread_rng();
         let template = dict
             .get_random_template(vec![
                 vec!["Altar".to_string()],
@@ -193,7 +213,7 @@ pub mod institutions {
             .unwrap();
         let diety_ref = culture.dieties.clone();
         let mut dieties: Vec<&Diety> = diety_ref.values().collect();
-        dieties.shuffle(&mut rand::thread_rng());
+        dieties.shuffle(&mut rand);
         let diety = dieties.first().unwrap();
         let output = Institution {
             id: Uuid::new_v4(),
@@ -212,13 +232,14 @@ pub mod institutions {
             base_job_titles: vec!["Priest".to_string()],
             staff: HashMap::new(),
             related_diety: Some(diety.id.clone()),
-            wealth: 0,
+            wealth: rand.gen_range(1..3),
         };
 
         return output;
     }
 
     pub fn generate_underground(dict: &Dictionary, culture: &Culture) -> Institution {
+        let mut rand = rand::thread_rng();
         let template = dict
             .get_random_template(vec![
                 vec!["SeedyBar".to_string(), "Fence".to_string()],
@@ -238,12 +259,13 @@ pub mod institutions {
             },
             staff: HashMap::new(),
             related_diety: None,
-            wealth: 0,
+            wealth: rand.gen_range(1..3),
         };
         return output;
     }
 
     pub fn generate_social(dict: &Dictionary, culture: &Culture) -> Institution {
+        let mut rand = rand::thread_rng();
         let template = dict
             .get_random_template(vec![
                 vec!["Social".to_string()],
@@ -258,7 +280,7 @@ pub mod institutions {
             base_job_titles: Vec::new(),
             staff: HashMap::new(),
             related_diety: None,
-            wealth: 0,
+            wealth: rand.gen_range(1..3),
         };
         if template.tags.contains("Food") {
             output.base_job_titles.push("Cook".to_string());
@@ -340,6 +362,11 @@ pub mod institutions {
                 .filter(|i| i.next_role().is_some())
                 .map(|i| i.id)
                 .collect();
+            println!(
+                "{}/{} Institutions Hiring",
+                hiring_institutions.len(),
+                institution_ref.len(),
+            );
             for mind in unemployed {
                 // TEMP - late keep minds in same institution type unless chance to break out happens
 
