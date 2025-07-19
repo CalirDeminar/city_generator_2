@@ -129,6 +129,7 @@ pub mod children {
                     self.generate_family_relations(&c_id);
                 }
             }
+            self.add_timestamp("generate children");
         }
     }
 }

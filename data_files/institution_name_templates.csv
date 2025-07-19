@@ -20,8 +20,8 @@ TEMPLATE(The ADJECTIVE[[Negative][Impersonal][ObjectState]] NOUN[[Container]]), 
 // Chapel
 TEMPLATE(The House of Concept), TAG(Altar), TAG(Altar), TAG(EraAll), TAG(InstitutionName)
 TEMPLATE(The House of Diety), TAG(Altar), TAG(Altar), TAG(EraAll), TAG(InstitutionName)
-TEMPLATE(The NOUN[[AreaFeature, LocalFeature][Geography]] of CONCEPT), TAG(Altar), TAG(EraAll), TAG(InstitutionName)
-TEMPLATE(The NOUN[[AreaFeature, LocalFeature][Geography]] of DIETY), TAG(Altar), TAG(EraAll), TAG(InstitutionName)
+TEMPLATE(The NOUN[[AreaFeature, LocalFeature][Geography]] of Concept), TAG(Altar), TAG(EraAll), TAG(InstitutionName)
+TEMPLATE(The NOUN[[AreaFeature, LocalFeature][Geography]] of Diety), TAG(Altar), TAG(EraAll), TAG(InstitutionName)
 // Cult?
 // ** Resources
 // General Retail

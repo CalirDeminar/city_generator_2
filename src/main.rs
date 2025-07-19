@@ -11,6 +11,7 @@ fn main() {
         println!("Year {} ----------", i);
         city.inspect_population();
         city.simulate_year(&dict);
+        city.print_debug_timer();
     }
     city.cleanup(1);
     city.export();

@@ -1,5 +1,5 @@
 pub mod partners {
-    use std::{collections::HashSet, time::Instant};
+    use std::collections::HashSet;
 
     use rand::{seq::SliceRandom, Rng};
     use uuid::Uuid;
@@ -19,16 +19,9 @@ pub mod partners {
 
     impl City {
         pub fn update_mind_partner_relations(self: &mut Self) {
-            let mut start = Instant::now();
             temp_find_partners(self);
-            let find_partner_duration = start.elapsed().as_millis();
-            start = Instant::now();
+
             temp_partner_evolution(self);
-            let partner_evolution_duration = start.elapsed().as_millis();
-            println!(
-                "Partner Relations Durations: Find: {}ms - Evolution: {}ms",
-                find_partner_duration, partner_evolution_duration
-            );
         }
     }
 
@@ -162,6 +155,7 @@ pub mod partners {
                 }
             }
         }
+        city.add_timestamp("find partners");
         return city;
     }
 
@@ -172,6 +166,7 @@ pub mod partners {
         let mut reference_citizens = city.population.clone();
 
         let mut processed: HashSet<Uuid> = HashSet::new();
+        city.add_timestamp("partner evolution overhead");
         for id in citizen_ids {
             let mind = reference_citizens.get(&id).unwrap();
             if !processed.contains(&id) && !mind.is_single() {
@@ -260,13 +255,16 @@ pub mod partners {
                                     mind_mut.last_name = mind_mut.origional_last_name.clone();
                                 }
                             }
+                            reference_citizens = city.population.clone();
                         }
                     }
                 }
+                city.add_timestamp("partner evolution non single case");
+            } else {
+                city.add_timestamp("partner evolution single case");
             }
-            reference_citizens = city.population.clone();
         }
-
+        city.add_timestamp("partner evolution overhead");
         return city;
     }
 

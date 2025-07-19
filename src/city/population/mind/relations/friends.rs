@@ -246,6 +246,7 @@ pub mod friends {
             for m in mind_ids {
                 temp_friend_evolution(city, &m);
             }
+            city.add_timestamp("temp find friends");
         }
     }
 }

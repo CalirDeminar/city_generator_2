@@ -153,6 +153,7 @@ pub mod relations {
                 }
                 target_mut.relations.get_mut(&verb).unwrap().insert(r_id);
             }
+            self.add_timestamp("generate_family_relations");
         }
     }
 }

@@ -1,5 +1,6 @@
 pub mod area;
 pub mod culture;
+pub mod debug_timer;
 pub mod dieties;
 pub mod institutions;
 pub mod population;
@@ -16,6 +17,7 @@ pub mod city {
     use procgen_templater::dictionary::dictionary::Dictionary;
     use uuid::Uuid;
 
+    use crate::city::debug_timer::debub_timer::{new_debug_timer, DebugTimer};
     use crate::city::population::mind::{mind::Mind, relations::relations::RelationVerb};
 
     use super::{
@@ -46,6 +48,7 @@ pub mod city {
     pub struct City {
         pub id: Uuid,
         pub name: String,
+        pub debug_timer: DebugTimer,
         pub culture: Culture,
         pub population: Population,
         pub areas: HashMap<AreaId, Area>,
@@ -56,6 +59,7 @@ pub mod city {
     impl City {
         pub fn simulate_year(self: &mut Self, dict: &Dictionary) {
             self.year += 1;
+            self.clear_timer();
             self.increment_citizen_ages();
             // employment
             self.fire_percentage(0.05);
@@ -65,6 +69,7 @@ pub mod city {
             self.update_mind_partner_relations();
             self.generate_children(dict);
 
+            self.add_timestamp("remainder");
             self.cleanup(5);
         }
         fn increment_citizen_ages(self: &mut Self) {
@@ -230,6 +235,18 @@ pub mod city {
                 }
             }
         }
+
+        pub fn add_timestamp(self: &mut Self, name: &str) {
+            self.debug_timer.add_timestamp(name);
+        }
+
+        pub fn clear_timer(self: &mut Self) {
+            self.debug_timer.clear();
+        }
+
+        pub fn print_debug_timer(self: &Self) {
+            self.debug_timer.print();
+        }
     }
 
     pub fn random_city(dict: &Dictionary, era: Era, base_population: usize) -> City {
@@ -242,6 +259,7 @@ pub mod city {
         return City {
             id: Uuid::new_v4(),
             name: String::new(),
+            debug_timer: new_debug_timer(),
             culture,
             population,
             areas: HashMap::new(),

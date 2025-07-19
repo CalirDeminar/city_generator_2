@@ -171,9 +171,16 @@ pub mod institutions {
 
         pub fn print(self: &Self, city: &City) -> String {
             let mut output = String::new();
+            let mut diety: Option<&Diety> = None;
+            if self.related_diety.is_some() {
+                diety = city.culture.dieties.get(&self.related_diety.unwrap());
+            }
 
             output += &format!("### {}  \n", self.name);
             output += &format!("Category: {:?}  \n", self.category);
+            if diety.is_some() {
+                output += &format!("Diety: {:?}/  \n", diety.unwrap().render_summary());
+            }
             output += &format!("Wealth: {}  \n", self.wealth);
 
             output += &format!("Staff:  \n");
@@ -215,6 +222,8 @@ pub mod institutions {
         let mut dieties: Vec<&Diety> = diety_ref.values().collect();
         dieties.shuffle(&mut rand);
         let diety = dieties.first().unwrap();
+        let diety_realm = &diety.realms.first().unwrap().base;
+
         let output = Institution {
             id: Uuid::new_v4(),
             name: dict
@@ -222,7 +231,7 @@ pub mod institutions {
                 .unwrap()
                 .replace("Concept", &diety.realms.first().unwrap().base)
                 .replace("Diety", &diety.name),
-            category: InsitutionCategory::Social,
+            category: InsitutionCategory::Altar,
             management: vec![ManagementSpecification {
                 title: String::from("Minister"),
                 reportee_types: vec![String::from("Priest")],
@@ -347,6 +356,7 @@ pub mod institutions {
                     }
                 }
             }
+            self.add_timestamp("fire percentage");
         }
         pub fn fill_and_create_jobs(self: &mut Self, dict: &Dictionary) {
             let population_ref = self.population.clone();
@@ -411,6 +421,7 @@ pub mod institutions {
                         .insert(new_institution.id.clone(), new_institution);
                 }
             }
+            self.add_timestamp("fill_and_create_jobs");
         }
     }
 
