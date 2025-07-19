@@ -1,218 +1,281 @@
-### The Zinc Ibex Inn  
+### The Teal Knife Inn  
+Category: Social  
+Wealth: 1  
+Staff:  
+    Manager: Immine Waltersen  
+    Chef: Lina Immineson  
+### The Ancient Harp Tavern  
+Category: Social  
+Wealth: 1  
+Staff:  
+    Cook: Aeleis Thorneson  
+    Waiter: Estrid Chenny  
+    Waiter: Burwenna Jonasson  
+    Waiter: Anthonie Aildredason  
+    Cook: Amelina Jeremysen  
+    Waiter: Josua Rogerson  
+### The Silver Llama Inn  
 Category: Social  
 Wealth: 2  
 Staff:  
-    Waiter: Adrian Danielsen  
-    Waiter: Gemma Grabielledotter  
-    Waiter: Agnes Benajhahson  
-### Gina's  
-Category: Social  
-Wealth: 1  
-Staff:  
-    Cook: Ylaria Nicodemussen  
-    Waiter: Christofer Issacksen  
-    Cook: Amanda Gemmasen  
-### The Tin Goblet  
+    Waiter: Estrid Lazaraussen  
+    Waiter: Hugh Rowe  
+    Chef: Tobias Issacksen  
+    Waiter: Egidia Dawessen  
+    Waiter: Agatha Andrewesen  
+    Manager: Patrick Zacharieson  
+    Waiter: Daniell Ashbye  
+### The Azure Elephant Seal  
 Category: Social  
 Wealth: 2  
 Staff:  
-    Chef: Anthonie Alinason  
-    Cook: Alesia Plesenciasen  
-### The Grey Elf Inn  
+    Waiter: Giliana Amelinasen  
+    Waiter: Alina Aildredason  
+    Waiter: Amicia Banyster  
+    Cook: Emma Bedford  
+### The Ancient Flagon Tavern  
 Category: Social  
-Wealth: 1  
+Wealth: 2  
 Staff:  
-    Waiter: Josias Amableson  
-### The Harbour of   
-Category: Social  
-Wealth: 1  
-Staff:  
-    Priest: Lina Danielsen  
-    Minister: Abraham Benajhahson  
-### The Fresh Alpaca  
-Category: Social  
-Wealth: 1  
-Staff:  
-    Chef: Clement Issacksen  
-    Waiter: Elaria Gilianason  
-### The Fresh Tankard  
-Category: Social  
-Wealth: 1  
-Staff:  
-    Waiter: Molle Eliasson  
-    Chef: Aeleis Laurencedotter  
-    Waiter: Azechiel Ylariason  
-### The Bloody Pot  
+    Waiter: Lazaraus Thorneson  
+    Cook: Anthony Johnathanson  
+    Cook: Edmond Oliviasen  
+    Waiter: John Aildredason  
+    Waiter: Immine Jeremysen  
+    Waiter: Symon Flinte  
+### The Bloody Goblet  
 Category: Underworld  
 Wealth: 1  
 Staff:  
-    Shopkeeper: Lawrence Anthonieson  
-    Shopkeeper: Josua Eliasson  
-### Niki's  
+    Shopkeeper: John Richardson  
+    Shopkeeper: Galiene Justinasen  
+### The Cyan Alpaca Inn  
 Category: Social  
 Wealth: 2  
 Staff:  
-    Waiter: Jason Isabeleson  
-    Cook: Aaron Marcson  
-### The Point of   
-Category: Social  
-Wealth: 2  
-Staff:  
-    Priest: Benajhah Danielson  
-    Priest: Edolina Gotherson  
-### Jignesh's  
-Category: Social  
-Wealth: 2  
-Staff:  
-    Chef: Jerome Katelinson  
-    Waiter: Edolina Danieldotter  
-### Patricia's  
-Category: Social  
-Wealth: 2  
-Staff:  
-    Waiter: Myles Davidson  
-    Chef: Josiah Danielsen  
-    Waiter: Michaiah Marcson  
-    Waiter: Marc Sabelineson  
-### The Orange Elk  
+    Chef: Juelina Jeromesen  
+    Waiter: Nicholas Tobiassen  
+    Cook: Myles Feliciasen  
+    Cook: Bartilmew Maggesen  
+    Cook: Myles Edelinason  
+### The New Gazelle Tavern  
 Category: Social  
 Wealth: 1  
 Staff:  
-    Waiter: Bartilmew Gotherson  
-### Noe's  
+    Waiter: Henry Sabelineson  
+    Cook: Bele Petronellasen  
+    Chef: Gerard Henrysen  
+    Cook: Isolda Amissen  
+    Waiter: Richard Elijachuhson  
+    Manager: Adrean Tobiasson  
+### The Battered Couldron  
+Category: Underworld  
+Wealth: 1  
+Staff:  
+    Shopkeeper: Joan Maggesen  
+### The Leaden Glass  
+Category: Social  
+Wealth: 2  
+Staff:  
+    Cook: Abell Noeson  
+    Cook: Joan Marionsen  
+    Waiter: Minna Ashbye  
+    Waiter: Philippa Josiassen  
+### The Indigo Barrel Tavern  
+Category: Social  
+Wealth: 2  
+Staff:  
+    Cook: Myles Michell  
+    Cook: Orella Tobiassen  
+    Manager: Dawes Sandes  
+    Waiter: Patrick Foster  
+    Chef: Philippa Bibelesen  
+    Waiter: Andrewe Justinason  
+### The House of The Drowning End of All  
 Category: Social  
 Wealth: 1  
 Staff:  
-    Cook: Nicodemus Gilianason  
-### The House of Kirk the Old  
-Category: Social  
-Wealth: 2  
-Staff:  
-    Priest: Leticia Merilddotter  
-### The Aluminium Lion Inn  
-Category: Social  
-Wealth: 2  
-Staff:  
-    Cook: Benajhah Laurenceson  
-    Cook: Eda Danieldotter  
-    Cook: Samuel Davidson  
-### The Great Pot Tavern  
-Category: Social  
-Wealth: 2  
-Staff:  
-    Waiter: Lauretta Josiasdotter  
-    Waiter: Clara Preciosasen  
-    Chef: Myles Merildson  
-### The Creek of   
-Category: Social  
-Wealth: 2  
-Staff:  
-    Priest: Grabielle Thomasson  
-### The Bay of   
-Category: Social  
-Wealth: 2  
-Staff:  
-    Priest: Noe Lauason  
-    Priest: Lazaraus Josiasson  
-### The Old Glass  
-Category: Social  
-Wealth: 2  
-Staff:  
-    Cook: Brian Grabielleson  
-### The Amber Jug  
-Category: Social  
-Wealth: 2  
-Staff:  
-    Cook: Philippa Sabelineson  
-    Waiter: Myles Danielson  
-### The Lake of   
-Category: Social  
-Wealth: 2  
-Staff:  
-    Priest: Felicia Preciosason  
-    Minister: Edmonde Aeleisson  
-    Priest: Walter Gotherson  
-    Priest: Jason Alinason  
-    Priest: Misery Danielson  
-### The Valley of   
+    Priest: Adrean Jasonson  
+    Priest: Florentia Rogerson  
+### The Cyan Elephant Seal Inn  
 Category: Social  
 Wealth: 1  
 Staff:  
-    Minister: Dauid Johnson  
-### The Great Yak  
+    Waiter: Daniel Daniellsen  
+    Waiter: Ahicham Bovingdon  
+    Waiter: Children Waltersen  
+    Chef: Sela Feliciasen  
+    Cook: Oswold Hawkins  
+### Caterina's  
 Category: Social  
 Wealth: 2  
 Staff:  
-    Waiter: William Danielson  
-    Cook: Plesencia Benajhahson  
-    Cook: Edward Marcson  
-### The Brown Bear  
+    Waiter: Eda Clementsen  
+    Waiter: Gilia Mathewsen  
+    Manager: Edward Waltersen  
+### The Fresh Tankard  
 Category: Social  
 Wealth: 2  
 Staff:  
-    Waiter: Frances Laurenceson  
-    Cook: Preciosa Raufesen  
-    Chef: Dowler Johnsen  
-    Cook: Edmond Raulfson  
-### The Teal Tiger Inn  
+    Waiter: Eva White  
+    Cook: Olivia Jeremiahsen  
+    Waiter: Symon Walterson  
+    Waiter: Godfrey Leeving  
+    Manager: Reina Bovingdon  
+    Waiter: Aeleis Moore  
+### The Great Buffalo Tavern  
 Category: Social  
 Wealth: 2  
 Staff:  
-    Waiter: Ecechiel Benajhahson  
-### The Great Fork Tavern  
+    Cook: Sela Robertsen  
+    Waiter: Walter Bartilmewson  
+    Waiter: Skies Clementsen  
+    Cook: Maria Rowlandsen  
+    Chef: Bele Daniellsen  
+    Cook: Edith Edelinason  
+    Waiter: Hugh Justinason  
+    Waiter: Cornelius Carter  
+### The Purple Pipes Inn  
+Category: Social  
+Wealth: 2  
+Staff:  
+    Cook: Nathanel Immineson  
+    Manager: Aldid Leticiasen  
+    Waiter: Ferdinandus Anthonieson  
+    Waiter: Caesaria Kylby  
+    Waiter: Amable Thornesen  
+    Cook: Thomas Mollyson  
+### The Old Yak Tavern  
+Category: Social  
+Wealth: 2  
+Staff:  
+    Waiter: Marina Eaton  
+    Cook: William Edwardsen  
+    Cook: Justina Foster  
+    Waiter: Amabil Grabiellesen  
+    Cook: Hugh Marson  
+    Cook: Hugh Crane  
+### The Ridge of   
+Category: Social  
+Wealth: 2  
+Staff:  
+    Priest: Theda Josuasen  
+    Priest: Mathew Mathewson  
+    Priest: Anabel Ailithasen  
+    Priest: Ailitha Edwardsen  
+    Priest: Emelina Amissen  
+    Priest: Grace Elariason  
+    Priest: Lauretta Liasen  
+### Amabil's  
+Category: Social  
+Wealth: 2  
+Staff:  
+    Cook: Duva Elijachuhsen  
+### The Yellow Cup Tavern  
 Category: Social  
 Wealth: 1  
 Staff:  
-    Cook: Benjamin Phillipson  
-### Mitch's  
-Category: Social  
-Wealth: 2  
-Staff:  
-    Cook: Rychard Johnson  
-### The Indigo Troll  
+    Cook: Florentia Godfreyson  
+    Chef: Berta Michell  
+    Cook: Pavia Mylessen  
+    Cook: Christopher Burwennason  
+### The Ancient Gorilla  
 Category: Social  
 Wealth: 1  
 Staff:  
-    Waiter: Clara Aildredadotter  
-### The New Lion Tavern  
+    Waiter: Ahelis Allyson  
+    Cook: Phillip Christopherson  
+    Cook: Robert Adreanson  
+    Waiter: Mabbe Banyster  
+### The Azure Horse Tavern  
 Category: Social  
 Wealth: 1  
 Staff:  
-    Cook: Alice Issacksen  
-    Waiter: Nathanel Grabielleson  
-### The Bright Troll Tavern  
-Category: Social  
-Wealth: 2  
-Staff:  
-    Waiter: Theda Reginasen  
-### The Black Donkey  
-Category: Social  
-Wealth: 2  
-Staff:  
-    Waiter: Galiena Lauasen  
-### The New Glass Inn  
+    Chef: Edenbras Elfildason  
+    Cook: Copper Noesen  
+### The Grand Reindeer Theater  
 Category: Social  
 Wealth: 1  
 Staff:  
-    Cook: Ameline Nathaneldotter  
-    Cook: Mabel Michaiahsen  
-### The House of Kirk the Old  
+    Actor: Mabella Burwennason  
+    Actor: Wylfride Redway  
+    Actor: Elias Amisson  
+### The Grand Yak Inn  
+Category: Social  
+Wealth: 1  
+Staff:  
+    Cook: Juliane Oliviasen  
+    Waiter: Anabel Rowe  
+### The Brown Saucepan Inn  
+Category: Social  
+Wealth: 1  
+Staff:  
+    Waiter: John Justinasen  
+    Cook: Daniell Sawcott  
+    Waiter: Nicodemus Burwennason  
+    Manager: Noe Edelinason  
+### The Ridge of   
+Category: Social  
+Wealth: 1  
+Staff:  
+    Minister: Camilla Alice  
+    Priest: Edith Elariason  
+    Priest: Galiena Corneliussen  
+### The House of Cameron the Indigo  
+Category: Social  
+Wealth: 1  
+Staff:  
+    Priest: Justina Moore  
+    Priest: Teffania Edasen  
+    Priest: Lawrence Ailithasen  
+    Priest: Juliane Edasen  
+    Priest: Loretta Derdes  
+### Dylan's  
 Category: Social  
 Wealth: 2  
 Staff:  
-    Priest: Ecechiel Johnsen  
-    Priest: Festivals Grauetsen  
-### The White Spoon Tavern  
+    Cook: Glass Alexandersen  
+    Waiter: Anthonie Rogerson  
+    Waiter: Adrean Glouer  
+    Cook: Mabel Henrysen  
+    Waiter: Lecie Mathewsen  
+    Cook: Nicodemus Beleson  
+### The Ancient Ibex Theater  
 Category: Social  
+Wealth: 1  
+Staff:  
+    Actor: Mathew Foster  
+    Stage Hand: Josias Banyster  
+### The Fresh Llama Inn  
+Category: Social  
+Wealth: 1  
+Staff:  
+    Waiter: Eda Estridsen  
+    Waiter: Dorcas Elariason  
+    Waiter: Myles Elijachuhson  
+    Cook: Peter Adrianson  
+    Waiter: Andrew West  
+### The New Pot Inn  
+Category: Social  
+Wealth: 1  
+Staff:  
+    Chef: Filth Clementson  
+    Waiter: Paul Adreanson  
+    Waiter: Oswold Robertsen  
+    Waiter: Sybil Tobiasson  
+    Cook: Aildreda Petronellasen  
+### The Green Troll Tavern  
+Category: Social  
+Wealth: 1  
+Staff:  
+    Waiter: Dauid Reginason  
+    Manager: Bibele Penlee  
+    Waiter: Juelina Amiciasen  
+    Waiter: Anabel Gilianasen  
+    Cook: Andrew Josiassen  
+### The Battered Glass  
+Category: Underworld  
 Wealth: 2  
 Staff:  
-    Chef: Amelina Gotherson  
-    Waiter: Beatricia Grauetson  
-### The Town of   
-Category: Social  
-Wealth: 2  
-Staff:  
-    Minister: Camilla Clementsen  
-    Priest: Fluri Thomasson  
-    Priest: Alesia Mabelson  
-    Minister: Anthonie Preciosason  
+    Shopkeeper: Immine Petronellasen  
+    Shopkeeper: Juetta Julianasen  

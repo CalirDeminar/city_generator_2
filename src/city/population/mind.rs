@@ -142,7 +142,7 @@ pub mod mind {
             }
 
             if self.relations.len() > 0 {
-                output += "Relations:  \n";
+                output += "\nRelations:  \n";
                 // TODO - order this
                 for verb in RELATIONS_ORDER {
                     if self.relations.contains_key(&verb) {
@@ -228,21 +228,27 @@ pub mod mind {
             // }
         }
         pub fn is_single(self: &Self) -> bool {
-            return self.sexuality.eq(&Sexuality::Asexual)
-                || ((!self.relations.contains_key(&RelationVerb::Spouse)
-                    || self
-                        .relations
-                        .get(&RelationVerb::Spouse)
-                        .unwrap()
-                        .len()
-                        .eq(&0))
-                    && (!self.relations.contains_key(&RelationVerb::Partner)
-                        || self
-                            .relations
-                            .get(&RelationVerb::Partner)
-                            .unwrap()
-                            .len()
-                            .eq(&0)));
+            let is_single = self.get_current_romantic_partner().eq(&None);
+            return self.sexuality.eq(&Sexuality::Asexual) || is_single;
+        }
+        pub fn get_current_romantic_partner(self: &Self) -> Option<(&Uuid, RelationVerb)> {
+            let relation_verbs = vec![RelationVerb::Spouse, RelationVerb::Partner];
+            let active_verb = relation_verbs.iter().find(|verb| {
+                self.relations.contains_key(&verb)
+                    && self.relations.get(&verb).unwrap().len().gt(&0)
+            });
+            if active_verb.is_none() {
+                return None;
+            }
+            return Some((
+                self.relations
+                    .get(active_verb.unwrap())
+                    .unwrap()
+                    .iter()
+                    .next()
+                    .unwrap(),
+                active_verb.unwrap().clone(),
+            ));
         }
         pub fn is_relation_of(self: &Self, other: &Uuid) -> bool {
             let relation_verbs = vec![
